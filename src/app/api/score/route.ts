@@ -45,13 +45,16 @@ export async function POST(request: Request) {
     };
 
     const scoreData = await generateCreditScore(farmer, language);
+    const isDemo = body.is_demo === true;
 
-    // If user is logged in and supabase is available, save/update their profile in the database
-    if (user && supabase) {
+    // If user is logged in OR it's a demo, save/update their profile in the database
+    if ((user || isDemo) && supabase) {
+      const targetId = user?.id || `demo-${farmer.phoneNumber.slice(-4)}-${Date.now()}`;
+      
       const { error: dbError } = await supabase
         .from('farmers')
         .upsert({
-          id: user.id,
+          id: targetId,
           name: farmer.name,
           phone_number: farmer.phoneNumber,
           location: farmer.location,

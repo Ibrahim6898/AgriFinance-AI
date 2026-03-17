@@ -17,13 +17,28 @@ export default function Navbar() {
 
     const getInitialSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user ?? null);
+      if (session?.user) {
+        setUser(session.user);
+      } else {
+        // Check for Demo Simulator User
+        const demo = localStorage.getItem('agrifinance_demo_user');
+        if (demo) setUser(JSON.parse(demo));
+      }
     };
 
     getInitialSession();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
+      if (session?.user) {
+        setUser(session.user);
+      } else {
+        const demo = localStorage.getItem('agrifinance_demo_user');
+        if (demo && _event !== 'SIGNED_OUT') {
+           setUser(JSON.parse(demo));
+        } else {
+           setUser(null);
+        }
+      }
     });
 
     return () => {
@@ -32,7 +47,10 @@ export default function Navbar() {
   }, [supabase]);
 
   const handleLogout = async () => {
+    localStorage.removeItem('agrifinance_demo_user');
     await supabase?.auth.signOut();
+    setUser(null);
+    router.push('/login');
     router.refresh();
   };
 

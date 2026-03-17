@@ -76,12 +76,14 @@ export default function FarmerForm({ onScoreSuccess }: FarmerFormProps) {
         hasPriorLoan: formData.hasPriorLoan,
       };
 
+      const isDemo = !!localStorage.getItem('agrifinance_demo_user');
       const res = await fetch('/api/score', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...profile,
-          language: language // Pass language context for deep localization
+          language: language,
+          is_demo: isDemo
         }),
       });
 
@@ -134,9 +136,18 @@ export default function FarmerForm({ onScoreSuccess }: FarmerFormProps) {
           
           <div>
             <label htmlFor="location" className="block text-sm font-semibold mb-1">{t('region')}</label>
-            <input type="text" id="location" name="location" value={formData.location} onChange={handleChange}
-              className="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]"
-              placeholder="e.g., Kano" />
+            <select 
+              id="location" 
+              name="location" 
+              value={formData.location} 
+              onChange={handleChange}
+              className="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#2D6A4F] bg-white text-sm"
+            >
+              <option value="">-- {language === 'ha' ? 'Zabi Karamar Hukuma' : 'Select LGA'} --</option>
+              {['Anka', 'Bakura', 'Birnin Magaji', 'Bukkuyum', 'Bungudu', 'Gummi', 'Gusau', 'Kauran Namoda', 'Maradun', 'Maru', 'Shinkafi', 'Talata Mafara', 'Tsafe', 'Zurmi'].map(lga => (
+                <option key={lga} value={`${lga}, Zamfara`}>{lga}</option>
+              ))}
+            </select>
           </div>
         </div>
 

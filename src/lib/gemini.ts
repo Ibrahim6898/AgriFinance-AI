@@ -1,146 +1,121 @@
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import { FarmerProfile, CreditScoreResult } from '../types/farmer';
 
-// Initialize the Google Gen AI client. Note that it automatically picks up the GEMINI_API_KEY environment variable if not passed explicitly,
-// but we pass it explicitly here for clarity based on the requirements.
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || 'AIza-placeholder-key' });
+// Initialize the Google Gen AI client.
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || 'AIza-placeholder-key');
 
-const SYSTEM_PROMPT = (language: string) => `You are an AI agricultural credit analyst for rural Sub-Saharan Africa. Your primary mission is Financial Inclusion for smallholder farmers.
+const SYSTEM_PROMPT = (language: string) => `You are an AI agricultural credit analyst for Zamfara State, Nigeria. 
+Your primary mission is Financial Inclusion for smallholder farmers. 
 You MUST assess farmers using a Hybrid Scoring Logic (Rules + AI Analysis).
 
-Language: Please provide all analysis, factors, and tips in ${language === 'ha' ? 'Hausa' : 'English'}.
+Language: Provide all analysis, factors, and tips in ${language === 'ha' ? 'Hausa' : 'English'}.
 
-Hybrid Rules (Priority):
-1. EXPERIENCE BIAS: If years_experience < 2, the credit_score cannot exceed 60 (high risk for new farmers).
-2. LOCAL CONTEXT: If location is "Kano" and crop is "Maize", "Sorghum", or "Rice", these are highly compatible; add 10 points for region-crop fit.
-3. SCALING POTENTIAL: If farmSizeAcres > 5, flag as "Commercial potential"; increase loan_recommendation by 20%.
-4. CLIMATE RESILIENCE: If irrigation is "false", climate_risk_score MUST be at least 6.
+Hybrid Rules (Zamfara Context):
+1. EXPERIENCE BIAS: If years_experience < 2, the credit_score cannot exceed 60.
+2. REGIONAL FIT: If crop is "Cotton", "Groundnuts", "Beans", or "Tobacco", add 10 points for region-crop fit in Zamfara.
+3. CLIMATE RESILIENCE: If irrigation is "false", climate_risk_score MUST be at least 6.
+4. LOAN CAP: Maximum recommendation is $5000 USD for Grade A, $2500 for Grade B.
 
-Return ONLY valid JSON with this exact structure:
+Return ONLY valid JSON:
 {
-  "credit_score": 85,
-  "grade": "A",
-  "climate_risk_score": 4,
-  "positive_factors": ["Rule Match: 10yr+ experience", "Region-Crop Fit: Kano Maize", "Irrigation resilient"],
-  "risk_factors": ["High regional heat index", "Small farm-to-yield ratio"],
-  "explanation": "Summarize how the hybrid rules and AI analysis resulted in this score. Be explainable.",
-  "loan_recommendation": "suggested range in USD",
-  "green_tips": ["Actionable tip 1", "Actionable tip 2", "Actionable tip 3"]
+  "credit_score": number,
+  "grade": "A" | "B" | "C" | "D",
+  "climate_risk_score": number,
+  "positive_factors": string[],
+  "risk_factors": string[],
+  "explanation": string,
+  "loan_recommendation": string,
+  "green_tips": string[]
 }
-
-Scoring Rubric (Total 100):
-- Experience (Experience Rules apply): 0-30
-- Asset Stability (Farm size + Irrigation): 0-30
-- Market Fit (Crop + Location context): 0-25
-- Financial Maturity (Prior history): 0-15
 `;
 
 /**
  * Calls the Gemini API to generate a credit score based on the farmer's profile.
- * Falls back to mock data if the API key is missing or the request fails.
  */
 export async function generateCreditScore(farmer: FarmerProfile, language: string = 'en'): Promise<CreditScoreResult> {
-  // Fallback if API key is not configured
-  if (!process.env.GEMINI_API_KEY) {
-    console.warn('GEMINI_API_KEY is missing. Returning mock data.');
+  if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === 'AIza-placeholder-key') {
+    console.warn('GEMINI_API_KEY is missing or placeholder. Returning mock data.');
     return getMockData(farmer, language);
   }
 
   try {
-    const response = await ai.models.generateContent({
-      model: 'gemini-1.5-flash',
-      contents: [
-        { role: 'user', parts: [{ text: JSON.stringify(farmer) }] }
-      ],
-      config: {
-        systemInstruction: SYSTEM_PROMPT(language),
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const prompt = `Farmer Profile: ${JSON.stringify(farmer)}`;
+    
+    const result = await model.generateContent({
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      generationConfig: {
         responseMimeType: 'application/json',
-        temperature: 0.2, // Low temperature for more consistent, analytical responses
-      }
+        temperature: 0.2,
+      },
+      systemInstruction: SYSTEM_PROMPT(language)
     });
 
-    if (!response.text) {
-      throw new Error('No text returned from Gemini API');
-    }
-
-    const result = JSON.parse(response.text) as CreditScoreResult;
-    return result;
+    const response = await result.response;
+    const text = response.text();
+    return JSON.parse(text) as CreditScoreResult;
   } catch (error) {
     console.error('Error generating credit score from Gemini:', error);
-    console.warn('Falling back to mock data...');
     return getMockData(farmer, language);
   }
 }
 
 /**
- * Generates deterministic-ish mock data based on the farmer's inputs 
- * so the application can still function perfectly during demo or offline mode.
+ * Generates deterministic-ish mock data based on the farmer's inputs.
  */
 function getMockData(farmer: FarmerProfile, language: string = 'en'): CreditScoreResult {
   const isHa = language === 'ha';
   let baseScore = 40;
-  const regionalCrops = ['maize', 'sorghum', 'rice', 'cowpea'];
-  const isRegionMatch = farmer.location.toLowerCase().includes('kano') && 
-                         regionalCrops.some(crop => farmer.primaryCrop.toLowerCase().includes(crop));
   
-  // Rule 1: Experience
+  // Zamfara-specific high value crops
+  const regionalCrops = ['cotton', 'groundnut', 'beans', 'tobacco', 'maize', 'sorghum'];
+  const isRegionMatch = regionalCrops.some(crop => farmer.primaryCrop.toLowerCase().includes(crop));
+  
   baseScore += Math.min(farmer.yearsExperience * 4, 30);
-  
-  // Rule 2: Local Context (Kano Regional Crops)
   if (isRegionMatch) baseScore += 10;
-  
-  // Rule 3: Irrigation
   if (farmer.hasIrrigation) baseScore += 15;
-  
-  // Rule 4: Scale
   if (farmer.farmSizeAcres > 5) baseScore += 5;
-
-  // Cap for low experience
   if (farmer.yearsExperience < 2) baseScore = Math.min(baseScore, 60);
 
   const score = Math.max(0, Math.min(100, baseScore));
-  let grade: 'A' | 'B' | 'C' | 'D' | 'F' = 'C';
+  let grade: 'A' | 'B' | 'C' | 'D' = 'C';
   if (score >= 80) grade = 'A';
   else if (score >= 70) grade = 'B';
   else if (score >= 60) grade = 'C';
-  else if (score >= 50) grade = 'D';
-  else grade = 'F';
+  else grade = 'D';
 
   return {
     credit_score: score,
     grade,
     climate_risk_score: farmer.hasIrrigation ? 3 : 7,
-    positive_factors: [
-      isRegionMatch 
-        ? (isHa ? `Daidaiton amfanin gona da yanki: Ya dace da noman ${farmer.primaryCrop} a Kano.` : `High Region-Crop Alignment: Ideal for ${farmer.primaryCrop} cultivation in Kano.`)
-        : (isHa ? "Daidaiton amfanin gona da wuri." : "Standard crop-region alignment."),
-      farmer.hasIrrigation 
-        ? (isHa ? "Dokar Juriya: Samun damar ban-ruwa yana rage hadarin fari." : "Resilience Rule: Access to irrigation mitigates drought risk.")
-        : (isHa ? "Hanyar noma mai karko." : "Stable farming method."),
-      farmer.farmSizeAcres > 5 
-        ? (isHa ? "Dokar Sikelin: Fadin gona yana nuna yuwuwar samun rarar kasuwanci." : "Scale Rule: Farm size indicates potential for commercial surplus.")
-        : (isHa ? "Karamin aikin gona mai saukin sarrafawa." : "Manageable smallholder operation.")
+    positive_factors: isHa ? [
+      isRegionMatch ? `Amfanin gona ya dace da yankin Zamfara: ${farmer.primaryCrop}` : "Daidaiton amfanin gona",
+      farmer.hasIrrigation ? "Inshorar yanayi: Samun ban-ruwa" : "Hanyoyin noma",
+      farmer.farmSizeAcres > 5 ? "Girma da yalwar gona" : "Manomi mai jajircewa"
+    ] : [
+      isRegionMatch ? `High Region-Crop alignment for Zamfara: ${farmer.primaryCrop}` : "Standard Crop Alignment",
+      farmer.hasIrrigation ? "Climate Resilience: Access to Irrigation" : "Stable Farming Method",
+      farmer.farmSizeAcres > 5 ? "Scale potential for commercial growth" : "Dedicated Smallholder"
     ],
-    risk_factors: [
-      farmer.yearsExperience < 2 
-        ? (isHa ? "Dokar Gwaninta: Karancin shekaru yana kara hadarin aiki ga masu ba da rance." : "Experience Rule: Low tenure increases operational risk for lenders.")
-        : (isHa ? "Canjin farashin kasuwa." : "Standard market price volatility."),
-      !farmer.hasIrrigation 
-        ? (isHa ? "Dokar Juriya: Rashin ban-ruwa yana kara hadarin fari saboda yanayi." : "Resilience Rule: Lack of irrigation increases climate vulnerability.")
-        : (isHa ? "Hadarin kananan kwari." : "Minor pests risk.")
+    risk_factors: isHa ? [
+      farmer.yearsExperience < 2 ? "Karancin shekarun gwaninta" : "Canjin kasuwa",
+      !farmer.hasIrrigation ? "Babban hadarin fari ba tare da ban-ruwa ba" : "Kwanciyar hankali"
+    ] : [
+      farmer.yearsExperience < 2 ? "Low Experience Bias" : "Market Volatility",
+      !farmer.hasIrrigation ? "High Climate Risk (Rain-fed dependency)" : "Low Security Risk"
     ],
     explanation: isHa 
-      ? `Bincike don ${farmer.name}: Hankali na jabu (AI) ya nuna darajar ${grade}. Babban dalilin hakan sun hada da ${farmer.yearsExperience} na shekarun gwaninta da kuma ${isRegionMatch ? `kyakkyawan daidaiton amfanin gona (${farmer.primaryCrop}) a Kano` : 'noman babban amfani mai karko'}. Jimillar maki shine ${score}/100.`
-      : `Analysis for ${farmer.name}: Hybrid logic identifies a ${grade} grade. Key drivers include ${farmer.yearsExperience} years of experience and ${isRegionMatch ? `excellent crop-region fit (${farmer.primaryCrop}) in Kano` : 'stable primary crop'}. Total score is ${score}/100.`,
-    loan_recommendation: score >= 80 ? "$400 - $750 USD" : (score >= 60 ? "$150 - $300 USD" : "$50 - $100 USD"),
+      ? `Binciken Mu don ${farmer.name}: Mun gano maki ${score}/100 a matakin ${grade}. Dalilan hakan sun hada da ${farmer.yearsExperience} na gwaninta da kuma kyakkyawan amfani na ${farmer.primaryCrop} a Zamfara.`
+      : `Analysis for ${farmer.name}: Scoring system identifies a ${grade} grade (${score}/100). Primary drivers include ${farmer.yearsExperience} years of experience and strong ${farmer.primaryCrop} yield potential in Zamfara.`,
+    loan_recommendation: score >= 80 ? "$500 - $1000 USD" : (score >= 60 ? "$200 - $400 USD" : "$50 - $150 USD"),
     green_tips: isHa ? [
-      "Koma amfani da irin da ke jure fari wanda majalisar yankin ku ta amince da shi.",
-      "Aiwatar da ban-ruwa na digo ko tara ruwan sama don tabbatar da girbi a duk shekara.",
-      "Yi rijista da kungiyar hadin kai ta gida don tara albarkatu da tattauna farashin taki mafi kyau."
+      "Yi amfani da irin da ke jure fari na Zamfara.",
+      "Shiga kungiyar manoma ta Karamar Hukumar ku.",
+      "Inganta dabarun ban-ruwa."
     ] : [
-      "Switch to drought-resistant seed varieties certified by the local council.",
-      "Implement drip irrigation or rainwater harvesting to ensure year-round yields.",
-      "Register with a local cooperative to pool resources and negotiate better fertilizer prices."
+      "Use drought-resistant seeds certified for Zamfara soils.",
+      "Join a local cooperative in your LGA for bulk fertilizer access.",
+      "Implement simple rainwater harvesting for small-scale irrigation."
     ]
   };
 }

@@ -64,6 +64,11 @@ export default function LoginPage() {
 
     if (isSimulatorMode) {
       if (otp === '123456') {
+        localStorage.setItem('agrifinance_demo_user', JSON.stringify({ 
+          id: 'demo-farmer-123', 
+          phone: phoneNumber || '08012345678',
+          user_metadata: { full_name: 'Demo Farmer' }
+        }));
         router.push('/onboard');
       } else {
         setError('Invalid simulator OTP. Try "123456".');
