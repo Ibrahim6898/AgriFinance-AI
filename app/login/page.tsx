@@ -11,6 +11,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+  const [isSimulatorMode, setIsSimulatorMode] = useState(false);
   
   const supabase = createClient();
   const router = useRouter();
@@ -26,7 +27,14 @@ export default function LoginPage() {
     });
 
     if (error) {
-      setError(error.message);
+      if (error.message.toLowerCase().includes('provider') || error.message.toLowerCase().includes('unsupported')) {
+        // Switch to Simulator Mode for Hackathon Demo
+        setIsSimulatorMode(true);
+        setStep('otp');
+        setMessage('Simulator Mode: Use "123456" as the OTP (SMS provider is currently disabled).');
+      } else {
+        setError(error.message);
+      }
     } else {
       setStep('otp');
       setMessage('OTP sent! Please check your phone.');
@@ -39,16 +47,24 @@ export default function LoginPage() {
     setLoading(true);
     setError('');
 
-    const { error } = await supabase.auth.verifyOtp({
-      phone: phoneNumber,
-      token: otp,
-      type: 'sms',
-    });
-
-    if (error) {
-      setError(error.message);
+    if (isSimulatorMode) {
+      if (otp === '123456') {
+        router.push('/onboard');
+      } else {
+        setError('Invalid simulator OTP. Try "123456".');
+      }
     } else {
-      router.push('/onboard');
+      const { error } = await supabase.auth.verifyOtp({
+        phone: phoneNumber,
+        token: otp,
+        type: 'sms',
+      });
+
+      if (error) {
+        setError(error.message);
+      } else {
+        router.push('/onboard');
+      }
     }
     setLoading(false);
   };
