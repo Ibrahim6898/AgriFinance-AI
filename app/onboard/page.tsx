@@ -25,6 +25,12 @@ export default function OnboardPage() {
     setProfile(null);
   };
 
+  const handleShare = () => {
+    if (!scoreData) return;
+    const message = `Hi! My AgriFinance credit grade is ${scoreData.grade} (Score: ${scoreData.credit_score}/100). I'm eligible for a $${scoreData.loan_recommendation} micro-loan upgrade! 🚜🌿`;
+    window.location.href = `sms:?body=${encodeURIComponent(message)}`;
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
@@ -124,7 +130,10 @@ export default function OnboardPage() {
               <button onClick={handleReset} className="text-[#2D6A4F] font-medium hover:underline">
                 &larr; Start Over
               </button>
-              <button className="bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-6 rounded-md transition-colors shadow-sm">
+              <button 
+                onClick={handleShare}
+                className="bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-6 rounded-md transition-colors shadow-sm"
+              >
                 Share via SMS
               </button>
             </div>
