@@ -5,9 +5,16 @@
 ## Table of Contents
 - [Features](#features)
 - [Architecture](#architecture)
+- [Deployment](#deployment)
 - [Setup & Installation](#setup--installation)
 - [Usage](#usage)
 - [AI Disclosure Statement](#ai-disclosure-statement)
+
+## Deployment
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FIbrahim6898%2FAgriFinance-AI&env=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY,GEMINI_API_KEY)
+
+Click the button above to deploy your own instance of AgriFinance AI. You will be prompted to enter your environment variables during the setup.
 
 ## Features
 - **AI Credit Scoring Engine**: Uses non-traditional data (farm size, experience, crop yield, irrigation) to assess creditworthiness.
