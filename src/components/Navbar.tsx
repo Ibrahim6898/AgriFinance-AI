@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { createClient } from '../lib/supabase-client';
+import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
 
 export default function Navbar() {
@@ -11,6 +11,8 @@ export default function Navbar() {
   const router = useRouter();
 
   useEffect(() => {
+    if (!supabase) return;
+
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
@@ -28,7 +30,7 @@ export default function Navbar() {
   }, [supabase]);
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    await supabase?.auth.signOut();
     router.refresh();
   };
 

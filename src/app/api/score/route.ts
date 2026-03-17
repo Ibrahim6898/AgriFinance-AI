@@ -1,13 +1,15 @@
 import { NextResponse } from 'next/server';
 import { generateCreditScore } from '../../../lib/gemini';
 import { FarmerProfile, FarmerScoreResponse } from '../../../types/farmer';
-import { createServerSupabaseClient } from '../../../lib/supabase-server';
+import { createClient } from '@/utils/supabase/server';
+import { cookies } from 'next/headers';
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const supabase = await createServerSupabaseClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const cookieStore = await cookies();
+    const supabase = createClient(cookieStore);
+    const user = supabase ? (await supabase.auth.getUser()).data.user : null;
     
     // Basic server-side validation
     if (!body || typeof body.name !== 'string' || typeof body.phoneNumber !== 'string') {
@@ -28,8 +30,8 @@ export async function POST(request: Request) {
 
     const scoreData = await generateCreditScore(farmer);
 
-    // If user is logged in, save/update their profile in the database
-    if (user) {
+    // If user is logged in and supabase is available, save/update their profile in the database
+    if (user && supabase) {
       const { error: dbError } = await supabase
         .from('farmers')
         .upsert({

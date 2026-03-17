@@ -3,7 +3,7 @@ import { FarmerProfile, CreditScoreResult } from '../types/farmer';
 
 // Initialize the Google Gen AI client. Note that it automatically picks up the GEMINI_API_KEY environment variable if not passed explicitly,
 // but we pass it explicitly here for clarity based on the requirements.
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || 'AIza-placeholder-key' });
 
 const SYSTEM_PROMPT = `You are an AI credit analyst specializing in agricultural microfinance for Sub-Saharan Africa. You assess smallholder farmers for creditworthiness using non-traditional data signals. You are fair, transparent, and always explain your reasoning in plain language a farmer can understand.
 

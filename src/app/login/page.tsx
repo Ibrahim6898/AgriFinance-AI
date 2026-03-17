@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { createClient } from '../../lib/supabase-client';
+import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
@@ -16,8 +16,23 @@ export default function LoginPage() {
   const supabase = createClient();
   const router = useRouter();
 
+  React.useEffect(() => {
+    if (!supabase) {
+      setIsSimulatorMode(true);
+      setMessage('Demo Mode: Security services are offline. Using simulator (OTP: 123456).');
+    }
+  }, [supabase]);
+
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSimulatorMode) {
+      setStep('otp');
+      return;
+    }
+    if (!supabase) {
+      setError('Connection to security services failed. Please try again later.');
+      return;
+    }
     setLoading(true);
     setError('');
     setMessage('');
@@ -54,6 +69,11 @@ export default function LoginPage() {
         setError('Invalid simulator OTP. Try "123456".');
       }
     } else {
+      if (!supabase) {
+        setError('Connection to security services failed. Please try again later.');
+        setLoading(false);
+        return;
+      }
       const { error } = await supabase.auth.verifyOtp({
         phone: phoneNumber,
         token: otp,
