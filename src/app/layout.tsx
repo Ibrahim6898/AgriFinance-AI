@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { LanguageProvider } from '@/contexts/LanguageContext';
-import LayoutContent from '@/components/LayoutContent';
+import LayoutContent from '../components/LayoutContent';
 
 export const metadata: Metadata = {
   title: 'AgriFinance AI',
@@ -20,8 +20,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <LanguageProvider>
-      <LayoutContent>{children}</LayoutContent>
-    </LanguageProvider>
+    <html lang="en">
+      <body className="antialiased bg-gray-50 text-slate-800">
+        <LanguageProvider>
+          <LayoutContent>{children}</LayoutContent>
+        </LanguageProvider>
+      </body>
+    </html>
   );
 }

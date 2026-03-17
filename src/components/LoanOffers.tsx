@@ -2,8 +2,8 @@ export function LoanOffers({ recommendation }: { recommendation: string }) {
   if (!recommendation) return null;
 
   const mockOffers = [
-    { lender: 'Safaricom Agri', rate: '2.5%', type: 'Fertilizer Input Loan', amount: recommendation },
-    { lender: 'RuralCoop', rate: '3.0%', type: 'Cash Micro-loan', amount: recommendation },
+    { lender: 'Babban Gona', rate: '2.5%', type: 'Fertilizer Input Loan', amount: recommendation },
+    { lender: 'Sterling Bank (Sabadi)', rate: '3.0%', type: 'Cash Micro-loan', amount: recommendation },
   ];
 
   return (

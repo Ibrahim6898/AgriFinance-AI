@@ -10,7 +10,7 @@ You MUST assess farmers using a Hybrid Scoring Logic (Rules + AI Analysis).
 
 Hybrid Rules (Priority):
 1. EXPERIENCE BIAS: If years_experience < 2, the credit_score cannot exceed 60 (high risk for new farmers).
-2. LOCAL CONTEXT: If location is "Kano" and crop is "Maize", these are highly compatible; add 10 points for region-crop fit.
+2. LOCAL CONTEXT: If location is "Kano" and crop is "Maize", "Sorghum", or "Rice", these are highly compatible; add 10 points for region-crop fit.
 3. SCALING POTENTIAL: If farmSizeAcres > 5, flag as "Commercial potential"; increase loan_recommendation by 20%.
 4. CLIMATE RESILIENCE: If irrigation is "false", climate_risk_score MUST be at least 6.
 
@@ -76,13 +76,15 @@ export async function generateCreditScore(farmer: FarmerProfile): Promise<Credit
  */
 function getMockData(farmer: FarmerProfile): CreditScoreResult {
   let baseScore = 40;
-  const isKanoMaize = farmer.location.toLowerCase().includes('kano') && farmer.primaryCrop.toLowerCase().includes('maize');
+  const regionalCrops = ['maize', 'sorghum', 'rice', 'cowpea'];
+  const isRegionMatch = farmer.location.toLowerCase().includes('kano') && 
+                         regionalCrops.some(crop => farmer.primaryCrop.toLowerCase().includes(crop));
   
   // Rule 1: Experience
   baseScore += Math.min(farmer.yearsExperience * 4, 30);
   
-  // Rule 2: Local Context (Kano Maize)
-  if (isKanoMaize) baseScore += 10;
+  // Rule 2: Local Context (Kano Regional Crops)
+  if (isRegionMatch) baseScore += 10;
   
   // Rule 3: Irrigation
   if (farmer.hasIrrigation) baseScore += 15;
@@ -106,7 +108,7 @@ function getMockData(farmer: FarmerProfile): CreditScoreResult {
     grade,
     climate_risk_score: farmer.hasIrrigation ? 3 : 7,
     positive_factors: [
-      isKanoMaize ? "High Region-Crop Alignment: Ideal for Maize cultivation in Kano." : "Standard crop-region alignment.",
+      isRegionMatch ? `High Region-Crop Alignment: Ideal for ${farmer.primaryCrop} cultivation in Kano.` : "Standard crop-region alignment.",
       farmer.hasIrrigation ? "Resilience Rule: Access to irrigation mitigates drought risk." : "Stable farming method.",
       farmer.farmSizeAcres > 5 ? "Scale Rule: Farm size indicates potential for commercial surplus." : "Manageable smallholder operation."
     ],
@@ -114,7 +116,7 @@ function getMockData(farmer: FarmerProfile): CreditScoreResult {
       farmer.yearsExperience < 2 ? "Experience Rule: Low tenure increases operational risk for lenders." : "Standard market price volatility.",
       !farmer.hasIrrigation ? "Resilience Rule: Lack of irrigation increases climate vulnerability." : "Minor pests risk."
     ],
-    explanation: `Analysis for ${farmer.name}: Hybrid logic identifies a ${grade} grade. Key drivers include ${farmer.yearsExperience} years of experience and ${isKanoMaize ? 'excellent crop-region fit in Kano' : 'stable primary crop'}. Total score is ${score}/100.`,
+    explanation: `Analysis for ${farmer.name}: Hybrid logic identifies a ${grade} grade. Key drivers include ${farmer.yearsExperience} years of experience and ${isRegionMatch ? `excellent crop-region fit (${farmer.primaryCrop}) in Kano` : 'stable primary crop'}. Total score is ${score}/100.`,
     loan_recommendation: score >= 80 ? "$400 - $750 USD" : (score >= 60 ? "$150 - $300 USD" : "$50 - $100 USD"),
     green_tips: [
       "Switch to drought-resistant seed varieties certified by the local council.",

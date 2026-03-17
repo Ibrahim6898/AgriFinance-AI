@@ -3,10 +3,16 @@
 import React, { useState } from 'react';
 
 export function SavingsTracker() {
+  const getRelativeDate = (daysAgo: number) => {
+    const d = new Date();
+    d.setDate(d.getDate() - daysAgo);
+    return d.toISOString().split('T')[0];
+  };
+
   const [savings, setSavings] = useState([
-    { week: 'Week 1', amount: 500, date: '2026-03-01' },
-    { week: 'Week 2', amount: 800, date: '2026-03-08' },
-    { week: 'Week 3', amount: 1200, date: '2026-03-15' },
+    { week: 'Week 1', amount: 500, date: getRelativeDate(14) },
+    { week: 'Week 2', amount: 800, date: getRelativeDate(7) },
+    { week: 'Week 3', amount: 1200, date: getRelativeDate(1) },
   ]);
 
   const total = savings.reduce((acc, curr) => acc + curr.amount, 0);
