@@ -7,9 +7,23 @@ import { cookies } from 'next/headers';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const cookieStore = await cookies();
-    const supabase = createClient(cookieStore);
-    const user = supabase ? (await supabase.auth.getUser()).data.user : null;
+    const supabase = await createClient();
+    if (!supabase) {
+      // Return score without database persistence
+      const scoreData = await generateCreditScore({
+        ...body,
+        farmSizeAcres: Number(body.farmSizeAcres) || 0,
+        estimatedYieldKg: Number(body.estimatedYieldKg) || 0,
+        yearsExperience: Number(body.yearsExperience) || 0,
+        hasIrrigation: Boolean(body.hasIrrigation),
+        hasPriorLoan: Boolean(body.hasPriorLoan)
+      } as FarmerProfile);
+      return NextResponse.json(
+        { success: true, data: scoreData } as FarmerScoreResponse,
+        { status: 200 }
+      );
+    }
+    const { data: { user } } = await supabase.auth.getUser();
     
     // Basic server-side validation
     if (!body || typeof body.name !== 'string' || typeof body.phoneNumber !== 'string') {
