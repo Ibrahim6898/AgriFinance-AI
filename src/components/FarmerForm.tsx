@@ -11,7 +11,7 @@ interface FarmerFormProps {
 export default function FarmerForm({ onScoreSuccess }: FarmerFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   // Default state matches our FarmerProfile
   const [formData, setFormData] = useState({
@@ -79,7 +79,10 @@ export default function FarmerForm({ onScoreSuccess }: FarmerFormProps) {
       const res = await fetch('/api/score', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(profile),
+        body: JSON.stringify({
+          ...profile,
+          language: language // Pass language context for deep localization
+        }),
       });
 
       const data = await res.json() as FarmerScoreResponse;

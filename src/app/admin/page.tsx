@@ -43,22 +43,75 @@ export default function AdminDashboard() {
     fetchFarmers();
   }, [supabase]);
 
+  const [selectedFarmer, setSelectedFarmer] = useState<FarmerDB | null>(null);
+
   const filteredFarmers = filterRegion 
     ? farmers.filter((f) => f.location?.toLowerCase().includes(filterRegion.toLowerCase()))
     : farmers;
 
   return (
     <div className="min-h-screen bg-slate-50 p-8">
+      {/* Detail Modal Overlay */}
+      {selectedFarmer && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+           <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl border border-gray-200 overflow-hidden animate-in fade-in zoom-in duration-200">
+              <div className="bg-[#2D6A4F] p-6 text-white flex justify-between items-center">
+                 <div>
+                    <h2 className="text-2xl font-black uppercase tracking-tight">{selectedFarmer.name}</h2>
+                    <p className="text-green-100 text-sm font-medium">{selectedFarmer.location}</p>
+                 </div>
+                 <button onClick={() => setSelectedFarmer(null)} className="text-3xl hover:text-red-200 transition-colors">×</button>
+              </div>
+              <div className="p-8 grid grid-cols-2 gap-8">
+                 <div className="space-y-4">
+                    <p className="text-xs font-black text-gray-400 uppercase tracking-widest">Farm Details</p>
+                    <div className="bg-gray-50 p-4 rounded-xl space-y-2">
+                       <p className="font-bold flex justify-between"><span className="text-gray-500">Crop:</span> <span>{selectedFarmer.primary_crop}</span></p>
+                       <p className="font-bold flex justify-between"><span className="text-gray-500">Method:</span> <span>Mechanized</span></p>
+                       <p className="font-bold flex justify-between"><span className="text-gray-500">Experience:</span> <span>5 Years</span></p>
+                    </div>
+                 </div>
+                 <div className="space-y-4">
+                    <p className="text-xs font-black text-gray-400 uppercase tracking-widest">Credit Health</p>
+                    <div className="bg-amber-50 p-4 rounded-xl space-y-2">
+                       <p className="font-bold flex justify-between"><span className="text-amber-800">Grade:</span> <span className="text-green-700">{selectedFarmer.credit_grade}</span></p>
+                       <p className="font-bold flex justify-between"><span className="text-amber-800">Score:</span> <span>{selectedFarmer.credit_score}/100</span></p>
+                       <p className="font-bold flex justify-between"><span className="text-amber-800">Lender Match:</span> <span>Babban Gona</span></p>
+                    </div>
+                 </div>
+              </div>
+              <div className="p-6 bg-gray-50 border-t border-gray-100 flex justify-end space-x-4">
+                 <button className="bg-[#2D6A4F] text-white px-8 py-3 rounded-lg font-black uppercase text-sm shadow hover:bg-[#1b4332] transition-colors">Approve Loan ✅</button>
+              </div>
+           </div>
+        </div>
+      )}
+
       <div className="max-w-6xl mx-auto">
-        <header className="flex justify-between items-center mb-8">
+        <header className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-3xl font-extrabold text-[#2D6A4F]">Lender Portal</h1>
-            <p className="text-gray-500 mt-1">Review AI-scored farmer profiles for loan matching.</p>
+            <h1 className="text-3xl font-extrabold text-[#2D6A4F]">Lender Portal (B2B)</h1>
+            <p className="text-gray-500 mt-1 font-medium italic">Empowering financial inclusion through AI-driven risk assessment.</p>
           </div>
-          <button className="bg-white border border-gray-300 px-4 py-2 rounded-md shadow-sm text-sm font-medium hover:bg-gray-50 flex items-center">
-             Export to CSV 📊
-          </button>
+          <div className="flex space-x-3">
+             <button className="bg-white border border-gray-300 px-4 py-2 rounded-md shadow-sm text-xs font-bold hover:bg-gray-50 flex items-center uppercase tracking-wider transition-all">
+                Export to CSV 📊
+             </button>
+          </div>
         </header>
+
+        {/* Importance Banner */}
+        <div className="bg-green-600 text-white p-6 rounded-xl shadow-inner mb-10 flex items-start space-x-4 border-l-8 border-green-800">
+           <span className="text-4xl">💡</span>
+           <div>
+              <h3 className="font-black text-lg mb-1 uppercase tracking-tight">Why this portal matters?</h3>
+              <p className="text-green-50 text-sm leading-relaxed font-medium">
+                 This dashboard is the bridge between millions of unbanked farmers and institutional capital. 
+                 By translating farm data into a standardized credit score, we enable lenders like <b>Babban Gona</b> 
+                 to provide credit without traditional collateral, directly tackling the inclusion gap.
+              </p>
+           </div>
+        </div>
 
         <div className="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
           <div className="p-4 border-b border-gray-200 bg-gray-50 flex items-center justify-between">
@@ -122,7 +175,12 @@ export default function AdminDashboard() {
                       </div>
                     </td>
                     <td className="p-4 text-right">
-                      <button className="text-[#2D6A4F] hover:text-[#1B4332] font-semibold text-sm">View Details</button>
+                      <button 
+                        onClick={() => setSelectedFarmer(farmer)}
+                        className="text-[#2D6A4F] hover:text-[#1B4332] font-black uppercase tracking-wider text-xs border border-[#2D6A4F] px-4 py-2 rounded-lg hover:bg-green-50 transition-all"
+                      >
+                        View Details
+                      </button>
                     </td>
                   </tr>
                 ))

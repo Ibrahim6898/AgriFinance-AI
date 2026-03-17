@@ -7,7 +7,9 @@ import { createClient } from '@/utils/supabase/server';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
+    const language = body.language || 'en';
     const supabase = await createClient();
+    
     if (!supabase) {
       // Return score without database persistence
       const scoreData = await generateCreditScore({
@@ -17,7 +19,7 @@ export async function POST(request: Request) {
         yearsExperience: Number(body.yearsExperience) || 0,
         hasIrrigation: Boolean(body.hasIrrigation),
         hasPriorLoan: Boolean(body.hasPriorLoan)
-      } as FarmerProfile);
+      } as FarmerProfile, language);
       return NextResponse.json(
         { success: true, data: scoreData } as FarmerScoreResponse,
         { status: 200 }
@@ -42,7 +44,7 @@ export async function POST(request: Request) {
       hasPriorLoan: Boolean(body.hasPriorLoan)
     };
 
-    const scoreData = await generateCreditScore(farmer);
+    const scoreData = await generateCreditScore(farmer, language);
 
     // If user is logged in and supabase is available, save/update their profile in the database
     if (user && supabase) {
