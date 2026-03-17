@@ -5,27 +5,32 @@ import { FarmerProfile, CreditScoreResult } from '../types/farmer';
 // but we pass it explicitly here for clarity based on the requirements.
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || 'AIza-placeholder-key' });
 
-const SYSTEM_PROMPT = `You are an AI credit analyst specializing in agricultural microfinance for Sub-Saharan Africa. You assess smallholder farmers for creditworthiness using non-traditional data signals. You are fair, transparent, and always explain your reasoning in plain language a farmer can understand.
+const SYSTEM_PROMPT = `You are an AI agricultural credit analyst for rural Sub-Saharan Africa. Your primary mission is Financial Inclusion for smallholder farmers.
+You MUST assess farmers using a Hybrid Scoring Logic (Rules + AI Analysis).
 
-You will receive a farmer profile in JSON. Return ONLY valid JSON with this exact structure:
+Hybrid Rules (Priority):
+1. EXPERIENCE BIAS: If years_experience < 2, the credit_score cannot exceed 60 (high risk for new farmers).
+2. LOCAL CONTEXT: If location is "Kano" and crop is "Maize", these are highly compatible; add 10 points for region-crop fit.
+3. SCALING POTENTIAL: If farmSizeAcres > 5, flag as "Commercial potential"; increase loan_recommendation by 20%.
+4. CLIMATE RESILIENCE: If irrigation is "false", climate_risk_score MUST be at least 6.
+
+Return ONLY valid JSON with this exact structure:
 {
   "credit_score": 85,
   "grade": "A",
   "climate_risk_score": 4,
-  "positive_factors": ["string", "string", "string"],
-  "risk_factors": ["string", "string"],
-  "explanation": "4 sentences max, plain English",
-  "loan_recommendation": "suggested loan range in USD",
-  "green_tips": ["string", "string", "string"]
+  "positive_factors": ["Rule Match: 10yr+ experience", "Region-Crop Fit: Kano Maize", "Irrigation resilient"],
+  "risk_factors": ["High regional heat index", "Small farm-to-yield ratio"],
+  "explanation": "Summarize how the hybrid rules and AI analysis resulted in this score. Be explainable.",
+  "loan_recommendation": "suggested range in USD",
+  "green_tips": ["Actionable tip 1", "Actionable tip 2", "Actionable tip 3"]
 }
 
-Scoring rubric:
-Years of experience: 0 to 5 points per year, max 25
-Farm size appropriateness for crop: 0 to 20
-Irrigation access: 0 to 15
-Crop market demand in region: 0 to 15
-Climate risk of region and crop combo: 0 to 15, inverse, higher risk means lower score
-Prior loan repayment history if any: 0 to 10
+Scoring Rubric (Total 100):
+- Experience (Experience Rules apply): 0-30
+- Asset Stability (Farm size + Irrigation): 0-30
+- Market Fit (Crop + Location context): 0-25
+- Financial Maturity (Prior history): 0-15
 `;
 
 /**
@@ -70,12 +75,24 @@ export async function generateCreditScore(farmer: FarmerProfile): Promise<Credit
  * so the application can still function perfectly during demo or offline mode.
  */
 function getMockData(farmer: FarmerProfile): CreditScoreResult {
-  let baseScore = 50;
-  baseScore += Math.min(farmer.yearsExperience * 3, 25);
-  if (farmer.hasIrrigation) baseScore += 15;
-  if (!farmer.hasPriorLoan) baseScore -= 10;
-  if (farmer.estimatedYieldKg > 2000) baseScore += 10;
+  let baseScore = 40;
+  const isKanoMaize = farmer.location.toLowerCase().includes('kano') && farmer.primaryCrop.toLowerCase().includes('maize');
   
+  // Rule 1: Experience
+  baseScore += Math.min(farmer.yearsExperience * 4, 30);
+  
+  // Rule 2: Local Context (Kano Maize)
+  if (isKanoMaize) baseScore += 10;
+  
+  // Rule 3: Irrigation
+  if (farmer.hasIrrigation) baseScore += 15;
+  
+  // Rule 4: Scale
+  if (farmer.farmSizeAcres > 5) baseScore += 5;
+
+  // Cap for low experience
+  if (farmer.yearsExperience < 2) baseScore = Math.min(baseScore, 60);
+
   const score = Math.max(0, Math.min(100, baseScore));
   let grade: 'A' | 'B' | 'C' | 'D' | 'F' = 'C';
   if (score >= 80) grade = 'A';
@@ -87,22 +104,22 @@ function getMockData(farmer: FarmerProfile): CreditScoreResult {
   return {
     credit_score: score,
     grade,
-    climate_risk_score: 4,
+    climate_risk_score: farmer.hasIrrigation ? 3 : 7,
     positive_factors: [
-      farmer.hasIrrigation ? "Access to reliable water source (irrigation) reduces crop failure risk." : "Stable primary crop selection.",
-      `${farmer.yearsExperience} years of farming experience indicates practical resilience.`,
-      `Estimated yield of ${farmer.estimatedYieldKg}kg shows strong growth potential.`
+      isKanoMaize ? "High Region-Crop Alignment: Ideal for Maize cultivation in Kano." : "Standard crop-region alignment.",
+      farmer.hasIrrigation ? "Resilience Rule: Access to irrigation mitigates drought risk." : "Stable farming method.",
+      farmer.farmSizeAcres > 5 ? "Scale Rule: Farm size indicates potential for commercial surplus." : "Manageable smallholder operation."
     ],
     risk_factors: [
-      "Vulnerability to seasonal dry spells in the current region.",
-      !farmer.hasPriorLoan ? "Lack of formal credit history makes long-term repayment patterns unpredictable." : "Potential market price fluctuations for primary crop."
+      farmer.yearsExperience < 2 ? "Experience Rule: Low tenure increases operational risk for lenders." : "Standard market price volatility.",
+      !farmer.hasIrrigation ? "Resilience Rule: Lack of irrigation increases climate vulnerability." : "Minor pests risk."
     ],
-    explanation: `Based on the provided details, ${farmer.name} demonstrates a fair capacity for repayment, primarily supported by ${farmer.yearsExperience} years of experience and a strong estimated yield of ${farmer.estimatedYieldKg}kg. The ${farmer.farmSizeAcres} acre farm shows promise, though weather variability presents a mild risk factor. Adopting additional recommended eco-practices could further improve stability.`,
-    loan_recommendation: score >= 70 ? "$250 - $500 USD" : "$50 - $150 USD",
+    explanation: `Analysis for ${farmer.name}: Hybrid logic identifies a ${grade} grade. Key drivers include ${farmer.yearsExperience} years of experience and ${isKanoMaize ? 'excellent crop-region fit in Kano' : 'stable primary crop'}. Total score is ${score}/100.`,
+    loan_recommendation: score >= 80 ? "$400 - $750 USD" : (score >= 60 ? "$150 - $300 USD" : "$50 - $100 USD"),
     green_tips: [
-      "Consider intercropping with legumes to naturally enrich soil nitrogen.",
-      "Use mulching around crop roots to retain moisture during periods of low rainfall.",
-      "Track local weather alerts to optimize the timing of your planting and harvesting."
+      "Switch to drought-resistant seed varieties certified by the local council.",
+      "Implement drip irrigation or rainwater harvesting to ensure year-round yields.",
+      "Register with a local cooperative to pool resources and negotiate better fertilizer prices."
     ]
   };
 }
