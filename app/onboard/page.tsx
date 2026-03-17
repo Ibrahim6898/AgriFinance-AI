@@ -7,18 +7,22 @@ import { ScoreBreakdownChart } from '../../components/ScoreBreakdownChart';
 import { LoanOffers } from '../../components/LoanOffers';
 import { GreenTips } from '../../components/GreenTips';
 import { SMSSimulator } from '../../components/SMSSimulator';
-import { FarmerScoreResponse } from '../../types/farmer';
+import ImprovementSimulator from '../../components/ImprovementSimulator';
+import { FarmerProfile, FarmerScoreResponse } from '../../types/farmer';
 
 export default function OnboardPage() {
   const [scoreData, setScoreData] = useState<FarmerScoreResponse['data'] | null>(null);
+  const [profile, setProfile] = useState<FarmerProfile | null>(null);
 
   // Once the form successfully submits, we swap the view to the Score Card
-  const handleScoreSuccess = (data: FarmerScoreResponse['data']) => {
+  const handleScoreSuccess = (data: FarmerScoreResponse['data'], farmerProfile: FarmerProfile) => {
     setScoreData(data);
+    setProfile(farmerProfile);
   };
 
   const handleReset = () => {
     setScoreData(null);
+    setProfile(null);
   };
 
   return (
@@ -62,12 +66,16 @@ export default function OnboardPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 mt-6">
-              <div className="md:col-span-1">
-                <ScoreCard score={scoreData.credit_score} grade={scoreData.grade} />
-                <div className="mt-4">
-                  <ScoreBreakdownChart score={scoreData.credit_score} />
-                </div>
-              </div>
+                    <div className="grid grid-cols-1 gap-6">
+                      <ScoreCard score={scoreData.credit_score} grade={scoreData.grade} />
+                      <ScoreBreakdownChart score={scoreData.credit_score} />
+                      <ImprovementSimulator 
+                        currentScore={scoreData.credit_score} 
+                        hasIrrigation={!!profile?.hasIrrigation} 
+                        hasPriorLoan={!!profile?.hasPriorLoan} 
+                      />
+                    </div>
+              
 
               <div className="md:col-span-2 space-y-6">
                 <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">

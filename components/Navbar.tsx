@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { createClient } from '../lib/supabase';
+import { createClient } from '../lib/supabase-client';
 import { useRouter } from 'next/navigation';
 
 export default function Navbar() {

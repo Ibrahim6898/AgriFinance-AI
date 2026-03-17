@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { generateCreditScore } from '../../../lib/gemini';
 import { FarmerProfile, FarmerScoreResponse } from '../../../types/farmer';
-import { createServerSupabaseClient } from '../../../lib/supabase';
+import { createServerSupabaseClient } from '../../../lib/supabase-server';
 
 export async function POST(request: Request) {
   try {

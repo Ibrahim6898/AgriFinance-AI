@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { FarmerProfile, FarmerScoreResponse } from '../types/farmer';
 
 interface FarmerFormProps {
-  onScoreSuccess: (data: FarmerScoreResponse['data']) => void;
+  onScoreSuccess: (data: FarmerScoreResponse['data'], profile: FarmerProfile) => void;
 }
 
 export default function FarmerForm({ onScoreSuccess }: FarmerFormProps) {
@@ -86,8 +86,8 @@ export default function FarmerForm({ onScoreSuccess }: FarmerFormProps) {
         throw new Error(data.error || 'Failed to analyze farm data');
       }
 
-      // Pass the successful score up to the parent page
-      onScoreSuccess(data.data);
+      // Pass the successful score and profile up to the parent page
+      onScoreSuccess(data.data, profile);
 
     } catch (err: any) {
       console.error(err);
