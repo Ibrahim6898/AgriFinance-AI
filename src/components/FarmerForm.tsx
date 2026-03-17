@@ -89,9 +89,10 @@ export default function FarmerForm({ onScoreSuccess }: FarmerFormProps) {
       // Pass the successful score and profile up to the parent page
       onScoreSuccess(data.data, profile);
 
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      setErrorMsg(err.message || 'An unexpected error occurred. Please try again.');
+      const message = err instanceof Error ? err.message : 'An unexpected error occurred. Please try again.';
+      setErrorMsg(message);
     } finally {
       setIsSubmitting(false);
     }

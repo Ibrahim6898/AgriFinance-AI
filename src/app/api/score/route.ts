@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { generateCreditScore } from '../../../lib/gemini';
 import { FarmerProfile, FarmerScoreResponse } from '../../../types/farmer';
 import { createClient } from '@/utils/supabase/server';
-import { cookies } from 'next/headers';
+
 
 export async function POST(request: Request) {
   try {

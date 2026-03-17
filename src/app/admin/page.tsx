@@ -2,20 +2,21 @@
 
 import { useState, useEffect } from 'react';
 import { createClient } from '@/utils/supabase/client';
+import { FarmerDB } from '@/types/farmer';
+
+const MOCK_FARMERS: FarmerDB[] = [
+  { id: '1', name: 'Amina Bello', location: 'Kano, Nigeria', primary_crop: 'Maize', credit_grade: 'A', credit_score: 88, climate_risk_score: 3, phone_number: '', farm_size_acres: 0, farming_method: '', estimated_yield_kg: 0, years_experience: 0, has_irrigation: false, has_prior_loan: false },
+  { id: '2', name: 'Kofi Mensah', location: 'Kumasi, Ghana', primary_crop: 'Cocoa', credit_grade: 'B', credit_score: 74, climate_risk_score: 5, phone_number: '', farm_size_acres: 0, farming_method: '', estimated_yield_kg: 0, years_experience: 0, has_irrigation: false, has_prior_loan: false },
+  { id: '3', name: 'John Kamau', location: 'Nakuru, Kenya', primary_crop: 'Coffee', credit_grade: 'C', credit_score: 62, climate_risk_score: 7, phone_number: '', farm_size_acres: 0, farming_method: '', estimated_yield_kg: 0, years_experience: 0, has_irrigation: false, has_prior_loan: false },
+  { id: '4', name: 'Zainab Jallow', location: 'Banjul, Gambia', primary_crop: 'Groundnuts', credit_grade: 'A', credit_score: 92, climate_risk_score: 2, phone_number: '', farm_size_acres: 0, farming_method: '', estimated_yield_kg: 0, years_experience: 0, has_irrigation: false, has_prior_loan: false },
+];
 
 export default function AdminDashboard() {
-  const [farmers, setFarmers] = useState<any[]>([]);
+  const [farmers, setFarmers] = useState<FarmerDB[]>([]);
   const [filterRegion, setFilterRegion] = useState('');
   const [loading, setLoading] = useState(true);
 
   const supabase = createClient();
-
-  const MOCK_FARMERS = [
-    { id: '1', name: 'Amina Bello', location: 'Kano, Nigeria', primary_crop: 'Maize', credit_grade: 'A', credit_score: 88, climate_risk_score: 3 },
-    { id: '2', name: 'Kofi Mensah', location: 'Kumasi, Ghana', primary_crop: 'Cocoa', credit_grade: 'B', credit_score: 74, climate_risk_score: 5 },
-    { id: '3', name: 'John Kamau', location: 'Nakuru, Kenya', primary_crop: 'Coffee', credit_grade: 'C', credit_score: 62, climate_risk_score: 7 },
-    { id: '4', name: 'Zainab Jallow', location: 'Banjul, Gambia', primary_crop: 'Groundnuts', credit_grade: 'A', credit_score: 92, climate_risk_score: 2 },
-  ];
 
   useEffect(() => {
     if (!supabase) {
@@ -34,7 +35,7 @@ export default function AdminDashboard() {
         console.error('Error fetching farmers:', error);
         setFarmers(MOCK_FARMERS);
       } else {
-        setFarmers(data && data.length > 0 ? data : MOCK_FARMERS);
+        setFarmers(data && data.length > 0 ? (data as unknown as FarmerDB[]) : MOCK_FARMERS);
       }
       setLoading(false);
     }
@@ -43,7 +44,7 @@ export default function AdminDashboard() {
   }, [supabase]);
 
   const filteredFarmers = filterRegion 
-    ? farmers.filter((f: any) => f.location?.toLowerCase().includes(filterRegion.toLowerCase()))
+    ? farmers.filter((f) => f.location?.toLowerCase().includes(filterRegion.toLowerCase()))
     : farmers;
 
   return (

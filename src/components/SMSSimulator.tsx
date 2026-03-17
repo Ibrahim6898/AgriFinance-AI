@@ -40,7 +40,7 @@ export function SMSSimulator({ score, loanAmt }: { score: number, loanAmt: strin
               AgriFinance Alert: Your farm analysis is ready!<br/><br/>
               Score: {score}/100<br/>
               You qualify for a loan estimate of {loanAmt}.<br/><br/>
-              Reply 'TIPS' for local weather advice.
+              Reply &apos;TIPS&apos; for local weather advice.
             </>
           )}
         </div>

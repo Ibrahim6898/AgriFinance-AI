@@ -13,6 +13,24 @@ export interface FarmerProfile {
   createdAt?: Date;
 }
 
+export interface FarmerDB {
+  id: string;
+  name: string;
+  location: string;
+  phone_number: string;
+  farm_size_acres: number;
+  primary_crop: string;
+  farming_method: string;
+  estimated_yield_kg: number;
+  years_experience: number;
+  has_irrigation: boolean;
+  has_prior_loan: boolean;
+  credit_score: number;
+  credit_grade: string;
+  climate_risk_score: number;
+  created_at?: string;
+}
+
 export type CreditGrade = 'A' | 'B' | 'C' | 'D' | 'F';
 
 export interface CreditScoreResult {
