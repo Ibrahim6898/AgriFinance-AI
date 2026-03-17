@@ -12,8 +12,8 @@
 ## Features
 - **AI Credit Scoring Engine**: Uses non-traditional data (farm size, experience, crop yield, irrigation) to assess creditworthiness.
 - **Climate Risk Assessment**: Flags climate risks and recommends green, climate-smart farming practices tailored to the farmer's region and crop.
-- **Digital Inclusion**: Designed to be accessible on 2G connections, including a built-in USSD/SMS flow simulator.
-- **Lender Dashboard**: Allows microfinance institutions to view and filter AI-scored farmer profiles for loan matching.
+- **Education & Score Improvement**: Provides a "what-if" simulator that shows farmers exactly how actions like adding irrigation or building loan history will increase their credit score.
+- **Lender Dashboard**: Allows microfinance institutions to view live, AI-scored farmer profiles from Supabase.
 
 ## Architecture
 
@@ -21,15 +21,15 @@ Below is a high-level overview of the AgriFinance AI data and application flow:
 
 ```mermaid
 graph TD
-    A[Farmer (Mobile/Feature Phone)] -->|USSD/SMS or Web Form| B[Next.js App Router Frontend]
-    B -->|Form Data via POST| C[Next.js API Route /api/score]
-    C -->|Generate AI Prompt| D[Google Gemini API]
-    D -->|JSON Score & Analysis| C
+    A["Farmer (Mobile or Web)"] -->|USSD/SMS or Web Form| B["Next.js App Frontend"]
+    B -->|Form Data| C["API /api/score"]
+    C -->|Generate AI Prompt| D["Google Gemini API"]
+    D -->|JSON Analysis| C
     C -->|Return Result| B
-    B -->|Display Score & Green Tips| A
-    E[Microfinance Lenders] -->|Access Dashboard| F[Admin Portal]
-    F -->|Filter & Export| G[(Mock Database / Supabase)]
-    C -.->|Store Profiles (Future)| G
+    B -->|Display Results| A
+    E["Microfinance Lenders"] -->|Access Dashboard| F["Admin Portal"]
+    F -->|Filter & Export| G[("Supabase Database")]
+    C -.->|Store Profiles| G
 ```
 
 ## Setup & Installation
