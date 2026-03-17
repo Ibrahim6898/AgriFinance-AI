@@ -1,8 +1,8 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenAI } from '@google/genai';
 import { FarmerProfile, CreditScoreResult } from '../types/farmer';
 
 // Initialize the Google Gen AI client.
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || 'AIza-placeholder-key');
+const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || 'AIza-placeholder-key' });
 
 const SYSTEM_PROMPT = (language: string) => `You are an AI agricultural credit analyst for Zamfara State, Nigeria. 
 Your primary mission is Financial Inclusion for smallholder farmers. 
@@ -39,21 +39,23 @@ export async function generateCreditScore(farmer: FarmerProfile, language: strin
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-    const prompt = `Farmer Profile: ${JSON.stringify(farmer)}`;
-    
-    const result = await model.generateContent({
-      contents: [{ role: 'user', parts: [{ text: prompt }] }],
-      generationConfig: {
+    const response = await genAI.models.generateContent({
+      model: 'gemini-1.5-flash',
+      contents: [
+        { role: 'user', parts: [{ text: JSON.stringify(farmer) }] }
+      ],
+      config: {
+        systemInstruction: SYSTEM_PROMPT(language),
         responseMimeType: 'application/json',
         temperature: 0.2,
-      },
-      systemInstruction: SYSTEM_PROMPT(language)
+      }
     });
 
-    const response = await result.response;
-    const text = response.text();
-    return JSON.parse(text) as CreditScoreResult;
+    if (!response.text) {
+      throw new Error('No text returned from Gemini API');
+    }
+
+    return JSON.parse(response.text) as CreditScoreResult;
   } catch (error) {
     console.error('Error generating credit score from Gemini:', error);
     return getMockData(farmer, language);
