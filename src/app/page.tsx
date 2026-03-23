@@ -30,7 +30,7 @@ export default function Page() {
         
         <div className="relative w-full h-[300px] sm:h-[400px] lg:h-[600px] rounded-3xl overflow-hidden shadow-2xl order-1 lg:order-2">
           <Image
-            src="/hero-image.jpg"
+            src="/hero-image.png"
             alt="Farmer using digital agriculture technology"
             fill
             className="object-cover hover:scale-105 transition-transform duration-700"
