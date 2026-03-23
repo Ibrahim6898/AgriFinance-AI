@@ -32,7 +32,8 @@ export default function AdminDashboard() {
       try {
         const { data, error } = await supabase.from('farmers').select('*').order('created_at', { ascending: false });
         if (error) throw error;
-        setFarmers(data && data.length > 0 ? (data as unknown as FarmerDB[]) : MOCK_FARMERS);
+        const fetchedData = data ? (data as unknown as FarmerDB[]) : [];
+        setFarmers([...fetchedData, ...MOCK_FARMERS]);
       } catch (error) {
         console.error('Error fetching farmers:', error);
         setFarmers(MOCK_FARMERS);

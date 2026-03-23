@@ -158,9 +158,20 @@ export default function FarmerForm({ onScoreSuccess }: FarmerFormProps) {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label htmlFor="primaryCrop" className="block text-sm font-semibold mb-1">{t('primary_crop')}</label>
-              <input type="text" id="primaryCrop" name="primaryCrop" value={formData.primaryCrop} onChange={handleChange}
-                className="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]"
-                placeholder="Maize" />
+              <select id="primaryCrop" name="primaryCrop" value={formData.primaryCrop} onChange={handleChange}
+                className="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#2D6A4F] bg-white text-sm"
+              >
+                <option value="">-- {language === 'ha' ? 'Zabi Amfanin Gona' : 'Select Crop'} --</option>
+                <option value="Maize">Maize / Masara</option>
+                <option value="Rice">Rice / Shinkafa</option>
+                <option value="Sorghum">Sorghum / Dawa</option>
+                <option value="Millet">Millet / Gero</option>
+                <option value="Cowpea">Cowpea / Wake</option>
+                <option value="Soybeans">Soybeans / Soya</option>
+                <option value="Cotton">Cotton / Auduga</option>
+                <option value="Groundnut">Groundnut / Gyada</option>
+                <option value="Other">Other / Wani</option>
+              </select>
             </div>
             
             <div>

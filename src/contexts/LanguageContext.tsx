@@ -42,6 +42,7 @@ const translations = {
     years_farming: 'Years Farming',
     farming_method: 'Farming Method',
     irrigation_check: 'I have access to reliable irrigation / water pump.',
+    loan_check: 'I have previously taken and repaid a loan.',
     full_name_placeholder: 'e.g., Amina Bello',
     error_name: 'Please enter your full name.',
     error_phone: 'Please enter a valid phone number.',

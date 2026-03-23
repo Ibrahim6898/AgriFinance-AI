@@ -62,18 +62,18 @@ export default function Navbar() {
           {t('app_name')}
         </Link>
         <div className="flex items-center space-x-4 sm:space-x-6">
-          <div className="flex bg-gray-100 p-1 rounded-md mr-2">
+          <div className="flex bg-gray-100 p-1 rounded-lg mr-2 space-x-1 items-center">
             <button 
               onClick={() => setLanguage('en')}
-              className={`px-2 py-0.5 text-[10px] font-bold rounded ${language === 'en' ? 'bg-white text-[#2D6A4F] shadow-sm' : 'text-gray-500'}`}
+              className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${language === 'en' ? 'bg-white text-[#2D6A4F] shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
             >
-              EN
+              ENG
             </button>
             <button 
               onClick={() => setLanguage('ha')}
-              className={`px-2 py-0.5 text-[10px] font-bold rounded ${language === 'ha' ? 'bg-white text-[#2D6A4F] shadow-sm' : 'text-gray-500'}`}
+              className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${language === 'ha' ? 'bg-white text-[#2D6A4F] shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
             >
-              HA
+              HAU
             </button>
           </div>
           <Link href="/onboard" className="text-sm font-medium text-gray-700 hover:text-[#2D6A4F] hidden sm:block">
