@@ -44,7 +44,6 @@ export function FinanceLiteracy() {
 
       <div className="bg-[#2D6A4F] text-white p-4 rounded-xl mt-6">
         <div className="flex items-center mb-2">
-          <span className="text-xl mr-2">💡</span>
           <h4 className="font-bold text-sm text-green-50">{t('fin_northern_alert')}</h4>
         </div>
         <p className="text-[11px] text-green-100 opacity-90 leading-snug">

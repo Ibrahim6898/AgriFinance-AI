@@ -7,7 +7,6 @@ export function GreenTips({ tips }: { tips: string[] }) {
   return (
     <div className="bg-emerald-50 rounded-xl p-6 border border-emerald-100 shadow-sm">
       <h3 className="text-[#2D6A4F] font-black text-lg mb-4 flex items-center uppercase tracking-tight">
-        <span className="text-2xl mr-2">🌱</span>
         {t('green_tips_title')}
       </h3>
       <ul className="space-y-3">

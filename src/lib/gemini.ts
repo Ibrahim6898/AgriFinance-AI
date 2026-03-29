@@ -14,7 +14,7 @@ Hybrid Rules (Zamfara Context):
 1. EXPERIENCE BIAS: If years_experience < 2, the credit_score cannot exceed 60.
 2. REGIONAL FIT: If crop is "Cotton", "Groundnuts", "Beans", or "Tobacco", add 10 points for region-crop fit in Zamfara.
 3. CLIMATE RESILIENCE: If irrigation is "false", climate_risk_score MUST be at least 6.
-4. LOAN CAP: Maximum recommendation is $5000 USD for Grade A, $2500 for Grade B.
+4. LOAN CAP: Maximum recommendation is ₦5,000,000 for Grade A, ₦2,500,000 for Grade B.
 
 Return ONLY valid JSON:
 {
@@ -109,7 +109,7 @@ function getMockData(farmer: FarmerProfile, language: string = 'en'): CreditScor
     explanation: isHa 
       ? `Binciken Mu don ${farmer.name}: Mun gano maki ${score}/100 a matakin ${grade}. Dalilan hakan sun hada da ${farmer.yearsExperience} na gwaninta da kuma kyakkyawan amfani na ${farmer.primaryCrop} a Zamfara.`
       : `Analysis for ${farmer.name}: Scoring system identifies a ${grade} grade (${score}/100). Primary drivers include ${farmer.yearsExperience} years of experience and strong ${farmer.primaryCrop} yield potential in Zamfara.`,
-    loan_recommendation: score >= 80 ? "$500 - $1000 USD" : (score >= 60 ? "$200 - $400 USD" : "$50 - $150 USD"),
+    loan_recommendation: score >= 80 ? "₦500,000 - ₦1,000,000" : (score >= 60 ? "₦200,000 - ₦400,000" : "₦50,000 - ₦150,000"),
     green_tips: isHa ? [
       "Yi amfani da irin da ke jure fari na Zamfara.",
       "Shiga kungiyar manoma ta Karamar Hukumar ku.",

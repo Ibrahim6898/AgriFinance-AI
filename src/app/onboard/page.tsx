@@ -31,7 +31,7 @@ export default function OnboardPage() {
 
   const handleShare = () => {
     if (!scoreData) return;
-    const message = `Hi! My AgriFinance credit grade is ${scoreData.grade} (Score: ${scoreData.credit_score}/100). I'm eligible for a $${scoreData.loan_recommendation} micro-loan upgrade! 🌿`;
+    const message = `Hi! My AgriFinance credit grade is ${scoreData.grade} (Score: ${scoreData.credit_score}/100). I'm eligible for a ${scoreData.loan_recommendation} micro-loan upgrade!`;
     window.location.href = `sms:?body=${encodeURIComponent(message)}`;
   };
 
@@ -43,7 +43,7 @@ export default function OnboardPage() {
     ).join('');
     const positiveList = scoreData.positive_factors.map((f: string) => `<li style="margin-bottom:6px;">✅ ${f}</li>`).join('');
     const riskList = scoreData.risk_factors.map((f: string) => `<li style="margin-bottom:6px;">⚠️ ${f}</li>`).join('');
-    const tipsList = scoreData.green_tips.map((tip: string) => `<li style="margin-bottom:8px;">🌱 ${tip}</li>`).join('');
+    const tipsList = scoreData.green_tips.map((tip: string) => `<li style="margin-bottom:8px;">${tip}</li>`).join('');
     const html = `<!DOCTYPE html>
 <html lang="en">
 <head>

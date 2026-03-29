@@ -151,7 +151,6 @@ export default function AdminDashboard() {
 
         {/* Importance Banner */}
         <div className="bg-green-600 text-white p-6 rounded-xl shadow-inner mb-10 flex items-start space-x-4 border-l-8 border-green-800">
-           <span className="text-4xl text-white">💡</span>
            <div>
               <h3 className="font-black text-lg mb-1 uppercase tracking-tight">{t('why_matters_title')}</h3>
               <p className="text-green-50 text-sm leading-relaxed font-medium">
