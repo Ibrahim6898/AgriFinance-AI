@@ -82,7 +82,7 @@ export default function Navbar() {
           <Link href="/admin" className="text-sm font-medium text-gray-700 hover:text-[#2D6A4F] hidden sm:block">
             {t('lenders')}
           </Link>
-          {user ? (
+          {user && (
             <div className="flex items-center space-x-4">
               <span className="text-xs text-gray-500 hidden md:block">{user.phone}</span>
               <button 
@@ -92,13 +92,6 @@ export default function Navbar() {
                 {t('sign_out')}
               </button>
             </div>
-          ) : (
-            <Link 
-              href="/login" 
-              className="bg-[#2D6A4F] text-white px-4 py-2 rounded-md text-sm font-bold hover:bg-[#1B4332] transition-colors"
-            >
-              {t('sign_in')}
-            </Link>
           )}
         </div>
       </div>
