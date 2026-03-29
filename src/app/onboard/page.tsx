@@ -111,13 +111,13 @@ export default function OnboardPage() {
   </div>
 </body>
 </html>`;
-    const blob = new Blob([html], { type: 'text/html;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
+    const dataUri = 'data:text/html;charset=utf-8,' + encodeURIComponent(html);
     const link = document.createElement('a');
-    link.href = url;
-    link.download = `AgriFinance-Report-${profile.name.replace(/\s+/g, '-')}.html`;
+    link.setAttribute('href', dataUri);
+    link.setAttribute('download', `AgriFinance-Report-${profile.name.replace(/\s+/g, '-')}.html`);
+    document.body.appendChild(link);
     link.click();
-    URL.revokeObjectURL(url);
+    document.body.removeChild(link);
   };
 
   return (

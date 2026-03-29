@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import { FarmerDB } from '@/types/farmer';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -20,51 +20,64 @@ export default function AdminDashboard() {
 
   const exportCSV = () => {
     const headers = ['Name', 'Location', 'Crop', 'Credit Grade', 'Credit Score', 'Climate Risk'];
-    const rows = filteredFarmers.map(f => [
+    const rows = filteredFarmers.map((f: FarmerDB) => [
       f.name,
       f.location || '',
       f.primary_crop,
       f.credit_grade,
-      f.credit_score,
-      f.climate_risk_score,
+      String(f.credit_score),
+      String(f.climate_risk_score),
     ]);
     const csvContent = [headers, ...rows]
-      .map(row => row.map(v => `"${String(v).replace(/"/g, '""')}"`).join(','))
+      .map(row => row.map((v: string) => `"${v.replace(/"/g, '""')}"`).join(','))
       .join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
+    const dataUri = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csvContent);
     const link = document.createElement('a');
-    link.href = url;
-    link.download = `agrifinance-farmers-${new Date().toISOString().slice(0,10)}.csv`;
+    link.setAttribute('href', dataUri);
+    link.setAttribute('download', `agrifinance-farmers-${new Date().toISOString().slice(0,10)}.csv`);
+    document.body.appendChild(link);
     link.click();
-    URL.revokeObjectURL(url);
+    document.body.removeChild(link);
   };
 
   const supabase = createClient();
 
-  useEffect(() => {
+  const fetchFarmers = useCallback(async () => {
     if (!supabase) {
       setFarmers(MOCK_FARMERS);
       setLoading(false);
       return;
     }
-
-    async function fetchFarmers() {
-      setLoading(true);
-      try {
-        const { data, error } = await supabase!.from('farmers').select('*').order('created_at', { ascending: false });
-        if (error) throw error;
-        const fetchedData = data ? (data as unknown as FarmerDB[]) : [];
-        setFarmers([...fetchedData, ...MOCK_FARMERS]);
-      } catch (error) {
-        console.error('Error fetching farmers:', error);
-        setFarmers(MOCK_FARMERS);
-      }
-      setLoading(false);
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.from('farmers').select('*').order('created_at', { ascending: false });
+      if (error) throw error;
+      const fetchedData = data ? (data as unknown as FarmerDB[]) : [];
+      setFarmers([...fetchedData, ...MOCK_FARMERS]);
+    } catch (err) {
+      console.error('Error fetching farmers:', err);
+      setFarmers(MOCK_FARMERS);
     }
-
-    fetchFarmers();
+    setLoading(false);
   }, [supabase]);
+
+  useEffect(() => {
+    fetchFarmers();
+
+    if (!supabase) return;
+
+    // Real-time: re-fetch whenever a farmer record is inserted or updated
+    const channel = supabase
+      .channel('farmers-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'farmers' }, () => {
+        fetchFarmers();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [fetchFarmers, supabase]);
 
   const [selectedFarmer, setSelectedFarmer] = useState<FarmerDB | null>(null);
 
@@ -117,6 +130,16 @@ export default function AdminDashboard() {
             <p className="text-gray-500 mt-1 font-medium italic">{t('admin_subtitle')}</p>
           </div>
           <div className="flex space-x-3">
+             <button
+               onClick={() => fetchFarmers()}
+               disabled={loading}
+               className="bg-white border border-gray-300 px-4 py-2 rounded-md shadow-sm text-xs font-bold hover:bg-gray-50 flex items-center uppercase tracking-wider transition-all text-slate-800 disabled:opacity-50"
+             >
+               {loading ? (
+                 <svg className="animate-spin h-3 w-3 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+               ) : '↻ '}
+               Refresh
+             </button>
              <button
                onClick={exportCSV}
                className="bg-white border border-gray-300 px-4 py-2 rounded-md shadow-sm text-xs font-bold hover:bg-gray-50 flex items-center uppercase tracking-wider transition-all text-slate-800"

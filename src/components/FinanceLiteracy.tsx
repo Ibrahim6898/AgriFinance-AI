@@ -10,7 +10,7 @@ const LITERACY_TIPS = [
   },
   {
     title: "Crop Insurance",
-    content: "Pula and NAIC offer index-based insurance. If your location (Kano) has no rain for 21 days, you get paid automatically.",
+    content: "Pula and NAIC offer index-based insurance. If your location (Zamfara) has no rain for 21 days, you get paid automatically.",
     category: "Resilience"
   },
   {
@@ -46,7 +46,7 @@ export function FinanceLiteracy() {
           <h4 className="font-bold text-sm text-green-50">Northern Region Alert</h4>
         </div>
         <p className="text-[11px] text-green-100 opacity-90 leading-snug">
-          The rainy season for Kano usually starts in June. Ensure your primary crop inputs (Sorghum/Maize) are secured by mid-May to avoid price hikes.
+          The rainy season for Zamfara usually starts in June. Ensure your primary crop inputs (Sorghum/Maize) are secured by mid-May to avoid price hikes.
         </p>
       </div>
     </div>
