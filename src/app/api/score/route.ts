@@ -47,9 +47,9 @@ export async function POST(request: Request) {
     const scoreData = await generateCreditScore(farmer, language);
     const isDemo = body.is_demo === true;
 
-    // If user is logged in OR it's a demo, save/update their profile in the database
-    if ((user || isDemo) && supabase) {
-      const targetId = user?.id || `demo-${farmer.phoneNumber.slice(-4)}-${Date.now()}`;
+    // Always save to the database so lenders can see all farmer profiles
+    if (supabase) {
+      const targetId = user?.id || `farmer-${farmer.phoneNumber.replace(/\D/g, '').slice(-6)}-${Date.now()}`;
       
       const { error: dbError } = await supabase
         .from('farmers')
@@ -77,7 +77,6 @@ export async function POST(request: Request) {
 
       if (dbError) {
         console.error('Error saving to Supabase:', dbError);
-        // We still return the scoreData even if saving fails, but we log the error
       }
     }
 

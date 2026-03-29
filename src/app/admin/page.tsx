@@ -18,6 +18,28 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const { t } = useLanguage();
 
+  const exportCSV = () => {
+    const headers = ['Name', 'Location', 'Crop', 'Credit Grade', 'Credit Score', 'Climate Risk'];
+    const rows = filteredFarmers.map(f => [
+      f.name,
+      f.location || '',
+      f.primary_crop,
+      f.credit_grade,
+      f.credit_score,
+      f.climate_risk_score,
+    ]);
+    const csvContent = [headers, ...rows]
+      .map(row => row.map(v => `"${String(v).replace(/"/g, '""')}"`).join(','))
+      .join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `agrifinance-farmers-${new Date().toISOString().slice(0,10)}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
   const supabase = createClient();
 
   useEffect(() => {
@@ -95,8 +117,11 @@ export default function AdminDashboard() {
             <p className="text-gray-500 mt-1 font-medium italic">{t('admin_subtitle')}</p>
           </div>
           <div className="flex space-x-3">
-             <button className="bg-white border border-gray-300 px-4 py-2 rounded-md shadow-sm text-xs font-bold hover:bg-gray-50 flex items-center uppercase tracking-wider transition-all text-slate-800">
-                {t('export_csv')}
+             <button
+               onClick={exportCSV}
+               className="bg-white border border-gray-300 px-4 py-2 rounded-md shadow-sm text-xs font-bold hover:bg-gray-50 flex items-center uppercase tracking-wider transition-all text-slate-800"
+             >
+                ⬇ {t('export_csv')}
              </button>
           </div>
         </header>
