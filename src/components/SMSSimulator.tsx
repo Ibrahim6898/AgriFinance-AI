@@ -1,8 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export function SMSSimulator({ score, loanAmt }: { score: number, loanAmt: string }) {
+  const { t } = useLanguage();
   const [phoneFrame, setPhoneFrame] = useState('ussd');
   const [ussdInput, setUssdInput] = useState('');
   const [ussdScreen, setUssdScreen] = useState('main');
@@ -13,10 +15,7 @@ export function SMSSimulator({ score, loanAmt }: { score: number, loanAmt: strin
     const val = ussdInput.trim();
     setUssdInput('');
 
-    if (val === '0') {
-      setUssdScreen('main');
-      return;
-    }
+    if (val === '0') { setUssdScreen('main'); return; }
 
     if (ussdScreen === 'main') {
       if (val === '1') setUssdScreen('loan');
@@ -33,49 +32,49 @@ export function SMSSimulator({ score, loanAmt }: { score: number, loanAmt: strin
       case 'score':
         return (
           <>
-            AgriFinance Score<br/>
+            {t('sms_score_title')}<br/>
             ---<br/>
-            Your current rating is:<br/>
-            Score: {score}/100<br/><br/>
-            0. Go Back
+            {t('sms_score_text')}<br/>
+            {t('sms_score_line').replace('{score}', String(score))}<br/><br/>
+            {t('sms_go_back')}
           </>
         );
       case 'loan':
         return (
           <>
-            Loan Application<br/>
+            {t('sms_loan_title')}<br/>
             ---<br/>
-            You pre-qualify for:<br/>
+            {t('sms_loan_qualify')}<br/>
             {loanAmt}<br/><br/>
-            1. Accept Offer<br/>
-            0. Go Back
+            {t('sms_accept')}<br/>
+            {t('sms_go_back')}
           </>
         );
       case 'loan_success':
         return (
           <>
-            Success!<br/>
+            {t('sms_success_title')}<br/>
             ---<br/>
-            Your loan application for {loanAmt} has been submitted to Babban Gona.<br/><br/>
-            0. Main Menu
+            {t('sms_success_text').replace('{amt}', loanAmt)}<br/><br/>
+            {t('sms_main_menu')}
           </>
         );
       case 'tips':
         return (
           <>
-            Green Farming Tips<br/>
+            {t('sms_tips_title')}<br/>
             ---<br/>
-            Tip 1: Retain crop residue after harvest to keep soil moisture high.<br/><br/>
-            0. Go Back
+            {t('sms_tip_1')}<br/><br/>
+            {t('sms_go_back')}
           </>
         );
       case 'lang':
         return (
           <>
-            Language / Harshe<br/>
+            {t('sms_lang_title')}<br/>
             ---<br/>
-            Language setting updated successfully.<br/><br/>
-            0. Main Menu
+            {t('sms_lang_updated')}<br/><br/>
+            {t('sms_main_menu')}
           </>
         );
       case 'main':
@@ -84,11 +83,11 @@ export function SMSSimulator({ score, loanAmt }: { score: number, loanAmt: strin
           <>
             &gt; *822*1#<br/>
             ---<br/>
-            Welcome to AgriFinance<br/><br/>
-            1. Apply for Loan<br/>
-            2. Check My Score<br/>
-            3. Green Farming Tips<br/>
-            4. Language (Hausa/ENG)<br/>
+            {t('sms_welcome')}<br/><br/>
+            {t('sms_menu_1')}<br/>
+            {t('sms_menu_2')}<br/>
+            {t('sms_menu_3')}<br/>
+            {t('sms_menu_4')}<br/>
           </>
         );
     }
@@ -97,9 +96,8 @@ export function SMSSimulator({ score, loanAmt }: { score: number, loanAmt: strin
   return (
     <div className="relative mx-auto mt-8 border-gray-800 dark:border-gray-800 bg-gray-800 border-[14px] rounded-[2.5rem] h-[600px] w-[300px] shadow-xl">
       <div className="w-[148px] h-[18px] bg-gray-800 top-0 rounded-b-[1rem] left-1/2 -translate-x-1/2 absolute"></div>
-      
+
       <div className="rounded-[2rem] overflow-hidden w-full h-full bg-slate-900 border border-slate-700 flex flex-col font-mono text-sm leading-tight p-4">
-        {/* Status bar mock */}
         <div className="flex justify-between text-slate-300 text-xs mt-1 mb-8 opacity-70">
           <span>{new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
           <div className="flex space-x-1">
@@ -112,12 +110,11 @@ export function SMSSimulator({ score, loanAmt }: { score: number, loanAmt: strin
           {phoneFrame === 'ussd' ? (
             <div className="flex flex-col h-full">
               <div>{renderUssdScreen()}</div>
-              
               <form onSubmit={handleSend} className="mt-4 flex flex-col space-y-2">
                 <div className="flex items-center">
-                  <span>Reply:</span>
-                  <input 
-                    type="text" 
+                  <span>{t('sms_reply')}</span>
+                  <input
+                    type="text"
                     value={ussdInput}
                     onChange={(e) => setUssdInput(e.target.value)}
                     className="bg-transparent border-none outline-none w-20 ml-2 text-green-400 font-mono focus:ring-0 p-0 shadow-none"
@@ -126,33 +123,33 @@ export function SMSSimulator({ score, loanAmt }: { score: number, loanAmt: strin
                     maxLength={2}
                   />
                 </div>
-                <div className="text-[10px] text-gray-500 mt-2 italic">(Type a number and press Enter)</div>
+                <div className="text-[10px] text-gray-500 mt-2 italic">{t('sms_hint')}</div>
               </form>
             </div>
           ) : (
             <>
-              💬 NEW TEXT MESSAGE<br/>
+              {t('sms_new_msg')}<br/>
               ---<br/>
-              AgriFinance Alert: Your farm analysis is ready!<br/><br/>
-              Score: {score}/100<br/>
-              You qualify for a loan estimate of {loanAmt}.<br/><br/>
-              Reply &apos;TIPS&apos; for local weather advice.
+              {t('sms_alert')}<br/><br/>
+              {t('sms_score_line').replace('{score}', String(score))}<br/>
+              {t('sms_qualify_line').replace('{amt}', loanAmt)}<br/><br/>
+              {t('sms_reply_tips')}
             </>
           )}
         </div>
 
         <div className="flex justify-between border-t border-slate-700 pt-4 mt-auto">
-          <button 
+          <button
             onClick={() => setPhoneFrame('ussd')}
             className={`px-3 py-1 rounded text-xs ${phoneFrame === 'ussd' ? 'bg-slate-700 text-white' : 'text-slate-400'}`}
           >
-            USSD Demo
+            {t('sms_ussd_demo')}
           </button>
-          <button 
+          <button
             onClick={() => setPhoneFrame('sms')}
             className={`px-3 py-1 rounded text-xs ${phoneFrame === 'sms' ? 'bg-slate-700 text-white' : 'text-slate-400'}`}
           >
-            SMS Demo
+            {t('sms_sms_demo')}
           </button>
         </div>
       </div>

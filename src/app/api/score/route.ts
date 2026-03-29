@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { generateCreditScore } from '../../../lib/gemini';
 import { FarmerProfile, FarmerScoreResponse } from '../../../types/farmer';
-import { createClient } from '@/utils/supabase/server';
+import { createClient, createAdminClient } from '@/utils/supabase/server';
 
 
 export async function POST(request: Request) {
@@ -47,11 +47,12 @@ export async function POST(request: Request) {
     const scoreData = await generateCreditScore(farmer, language);
     const isDemo = body.is_demo === true;
 
-    // Always save to the database so lenders can see all farmer profiles
-    if (supabase) {
+    // Always save to the database using admin client (bypasses RLS)
+    const adminClient = createAdminClient();
+    if (adminClient) {
       const targetId = user?.id || `farmer-${farmer.phoneNumber.replace(/\D/g, '').slice(-6)}-${Date.now()}`;
       
-      const { error: dbError } = await supabase
+      const { error: dbError } = await adminClient
         .from('farmers')
         .upsert({
           id: targetId,
@@ -76,8 +77,12 @@ export async function POST(request: Request) {
         });
 
       if (dbError) {
-        console.error('Error saving to Supabase:', dbError);
+        console.error('Error saving farmer to Supabase:', dbError);
+      } else {
+        console.log('Farmer saved successfully:', targetId);
       }
+    } else {
+      console.warn('Admin client unavailable — SUPABASE_SERVICE_ROLE_KEY may not be set');
     }
 
     return NextResponse.json(

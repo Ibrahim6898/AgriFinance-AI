@@ -1,7 +1,11 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Page() {
+  const { t } = useLanguage();
   return (
     <div className="min-h-screen flex flex-col justify-center p-8 bg-gray-50">
       <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -10,24 +14,24 @@ export default function Page() {
             AgriFinance AI
           </h1>
           <p className="text-xl text-gray-600 mb-8 leading-relaxed max-w-xl">
-            Empowering smallholder farmers with access to fair micro-loans through AI-powered credit scoring based on real farming data, not just bank history.
+            {t('home_tagline')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
-            <Link 
-              href="/onboard" 
+            <Link
+              href="/onboard"
               className="bg-[#2D6A4F] text-white px-8 py-4 rounded-lg font-bold hover:bg-[#1B4332] transition-colors shadow-lg text-lg text-center"
             >
-              Farmer Onboarding
+              {t('home_farmer_btn')}
             </Link>
-            <Link 
-              href="/admin" 
+            <Link
+              href="/admin"
               className="bg-white text-[#2D6A4F] border-2 border-[#2D6A4F] px-8 py-4 rounded-lg font-bold hover:bg-green-50 transition-colors shadow-sm text-lg text-center"
             >
-              Admin Portal
+              {t('home_admin_btn')}
             </Link>
           </div>
         </div>
-        
+
         <div className="relative w-full h-[300px] sm:h-[400px] lg:h-[600px] rounded-3xl overflow-hidden shadow-2xl order-1 lg:order-2">
           <Image
             src="/hero-image.png"
@@ -36,7 +40,6 @@ export default function Page() {
             className="object-cover hover:scale-105 transition-transform duration-700"
             priority
           />
-          {/* Overlay gradient to ensure text readability if needed or just for aesthetics */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
         </div>
       </div>
