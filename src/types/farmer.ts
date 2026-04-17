@@ -28,6 +28,8 @@ export interface FarmerDB {
   credit_score: number;
   credit_grade: string;
   climate_risk_score: number;
+  loan_status?: 'pending' | 'approved' | 'rejected';
+  assigned_lender?: string;
   created_at?: string;
 }
 

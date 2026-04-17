@@ -99,7 +99,7 @@ export default function AdminDashboard() {
                  </div>
                  <button onClick={() => setSelectedFarmer(null)} className="text-3xl hover:text-red-200 transition-colors">×</button>
               </div>
-              <div className="p-8 grid grid-cols-2 gap-8 text-slate-800">
+               <div className="p-8 grid grid-cols-2 gap-8 text-slate-800">
                  <div className="space-y-4">
                     <p className="text-xs font-black text-gray-400 uppercase tracking-widest">{t('modal_farm_details')}</p>
                     <div className="bg-gray-50 p-4 rounded-xl space-y-2">
@@ -113,12 +113,10 @@ export default function AdminDashboard() {
                     <div className="bg-amber-50 p-4 rounded-xl space-y-2">
                        <p className="font-bold flex justify-between"><span className="text-amber-800">Grade:</span> <span className="text-green-700">{selectedFarmer.credit_grade}</span></p>
                        <p className="font-bold flex justify-between"><span className="text-amber-800">Score:</span> <span>{selectedFarmer.credit_score}/100</span></p>
-                       <p className="font-bold flex justify-between"><span className="text-amber-800">Lender Match:</span> <span>Babban Gona</span></p>
+                       <p className="font-bold flex justify-between"><span className="text-amber-800">Assigned Lender:</span> <span className="font-black text-slate-800">{selectedFarmer.assigned_lender || 'Pending Match'}</span></p>
+                       <p className="font-bold flex justify-between"><span className="text-amber-800">Status:</span> <span className="uppercase text-amber-700">{selectedFarmer.loan_status || 'Pending'}</span></p>
                     </div>
                  </div>
-              </div>
-              <div className="p-6 bg-gray-50 border-t border-gray-100 flex justify-end space-x-4">
-                 <button className="bg-[#2D6A4F] text-white px-8 py-3 rounded-lg font-black uppercase text-sm shadow hover:bg-[#1b4332] transition-colors">{t('approve_loan')}</button>
               </div>
            </div>
         </div>

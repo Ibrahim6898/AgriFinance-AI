@@ -52,6 +52,11 @@ export async function POST(request: Request) {
     if (adminClient) {
       const targetId = `farmer-${farmer.phoneNumber.replace(/\D/g, '')}`;
       
+      let assignedLender = 'Pending Match';
+      const rec = (scoreData.loan_recommendation || '').toLowerCase();
+      if (rec.includes('babban gona')) assignedLender = 'Babban Gona';
+      if (rec.includes('sterling')) assignedLender = 'Sterling Bank (Sabadi)';
+      
       const { error: dbError } = await adminClient
         .from('farmers')
         .upsert({
@@ -74,6 +79,8 @@ export async function POST(request: Request) {
           positive_factors: scoreData.positive_factors,
           risk_factors: scoreData.risk_factors,
           green_tips: scoreData.green_tips,
+          loan_status: 'pending',
+          assigned_lender: assignedLender
         }, { onConflict: 'id' });
 
       if (dbError) {
