@@ -13,8 +13,12 @@ interface LanguageContextType {
 const translations = {
   en: {
     app_name: 'AgriFinance AI',
+    hero_subtitle: 'Empowering smallholder farmers with access to fair micro-loans through AI-powered credit scoring based on real farming data, not just bank history.',
+    farmer_onboarding: 'Farmer Onboarding',
+    admin_portal: 'Admin Portal',
     onboarding: 'Onboarding',
     lenders: 'Lenders',
+
     sign_in: 'Sign In',
     sign_out: 'Sign Out',
     join_title: 'Join AgriFinance',
@@ -138,8 +142,12 @@ const translations = {
   },
   ha: {
     app_name: 'AgriFinance AI',
+    hero_subtitle: 'Bada karfi ga kananan manoma da damar samun rance mai adalci ta hanyar auna kimar bashi da AI, dangane da ainihin bayanan noma ba kawai tarihin banki ba.',
+    farmer_onboarding: 'Shigan Manomi',
+    admin_portal: 'Portal Na Admin',
     onboarding: 'Shigarwa',
     lenders: 'Masu Ba da Rance',
+
     sign_in: 'Shiga',
     sign_out: 'Fita',
     join_title: 'Kasance da AgriFinance',

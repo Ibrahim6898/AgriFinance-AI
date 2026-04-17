@@ -18,10 +18,40 @@ export function SavingsTracker() {
     { weekKey: 'savings_week3', amount: 1200, date: getRelativeDate(1) },
   ]);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [savingsInput, setSavingsInput] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
+  const [showSuccess, setShowSuccess] = useState(false);
+
   const total = savings.reduce((acc, curr) => acc + curr.amount, 0);
 
+  const handleSave = () => {
+    const amountNum = parseFloat(savingsInput);
+    if (isNaN(amountNum) || amountNum < 200) {
+      setErrorMsg('Minimum amount is ₦200');
+      return;
+    }
+    setErrorMsg('');
+    
+    setSavings([
+      ...savings,
+      {
+        week: `Week ${savings.length + 1}`,
+        amount: amountNum,
+        date: new Date().toISOString().split('T')[0]
+      }
+    ]);
+    
+    setShowSuccess(true);
+    setTimeout(() => {
+      setShowSuccess(false);
+      setIsModalOpen(false);
+      setSavingsInput('');
+    }, 1500);
+  };
+
   return (
-    <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+    <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm relative">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-bold text-[#2D6A4F]">{t('savings_title')}</h3>
         <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-bold">{t('savings_active')}</span>
@@ -44,13 +74,67 @@ export function SavingsTracker() {
         ))}
       </div>
 
+<<<<<<< Updated upstream
       <button className="w-full mt-6 py-2 px-4 border-2 border-[#2D6A4F] text-[#2D6A4F] font-bold rounded-lg hover:bg-[#2D6A4F] hover:text-white transition-all text-sm">
         {t('savings_add_btn')}
+=======
+      <button 
+        onClick={() => setIsModalOpen(true)}
+        className="w-full mt-6 py-2 px-4 border-2 border-[#2D6A4F] text-[#2D6A4F] font-bold rounded-lg hover:bg-[#2D6A4F] hover:text-white transition-all text-sm"
+      >
+        Add Small Savings (₦200 min)
+>>>>>>> Stashed changes
       </button>
 
       <p className="mt-4 text-[10px] text-gray-400 italic text-center leading-tight">
         {t('savings_footer')}
       </p>
+
+      {isModalOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+          onClick={() => setIsModalOpen(false)}
+        >
+          <div 
+            className="bg-white rounded-xl shadow-lg p-6 w-full max-w-sm"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {showSuccess ? (
+              <div className="text-center py-6">
+                <div className="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">✓</div>
+                <h4 className="font-bold text-lg text-slate-800">Savings Added!</h4>
+                <p className="text-sm text-gray-500 mt-2">Your wallet balance has been updated.</p>
+              </div>
+            ) : (
+              <>
+                <div className="flex justify-between items-center mb-4">
+                  <h4 className="font-bold text-lg text-[#2D6A4F]">Add Savings</h4>
+                  <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600 text-xl leading-none">&times;</button>
+                </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Amount (₦)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="100"
+                    placeholder="Enter amount..."
+                    className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-[#2D6A4F] focus:outline-none"
+                    value={savingsInput}
+                    onChange={(e) => setSavingsInput(e.target.value)}
+                  />
+                  {errorMsg && <p className="text-red-500 text-sm mt-1">{errorMsg}</p>}
+                </div>
+                <button
+                  onClick={handleSave}
+                  className="w-full bg-[#2D6A4F] text-white font-bold py-2 rounded-lg hover:bg-[#1B4332] transition-colors"
+                >
+                  Confirm Savings
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
