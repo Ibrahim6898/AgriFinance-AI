@@ -45,7 +45,7 @@ export async function POST(request: Request) {
     };
 
     const scoreData = await generateCreditScore(farmer, language);
-    const isDemo = body.is_demo === true;
+
 
     // Always save to the database using admin client (bypasses RLS)
     const adminClient = createAdminClient();

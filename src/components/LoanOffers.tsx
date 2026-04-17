@@ -1,18 +1,21 @@
 'use client';
 
-<<<<<<< Updated upstream
+import React, { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
+
+interface Offer {
+  lender: string;
+  rate: string;
+  type: string;
+  amount: string;
+  ussd?: string;
+  phone?: string;
+}
 
 export function LoanOffers({ recommendation }: { recommendation: string }) {
   const { t } = useLanguage();
-=======
-import React, { useState } from 'react';
-
-export function LoanOffers({ recommendation }: { recommendation: string }) {
-  const [selectedOffer, setSelectedOffer] = useState<any>(null);
+  const [selectedOffer, setSelectedOffer] = useState<Offer | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
-
->>>>>>> Stashed changes
   if (!recommendation) return null;
 
   const mockOffers = [
@@ -34,7 +37,7 @@ export function LoanOffers({ recommendation }: { recommendation: string }) {
     },
   ];
 
-  const handleApplyClick = (offer: any) => {
+  const handleApplyClick = (offer: Offer) => {
     setSelectedOffer(offer);
     setShowSuccess(false);
   };
@@ -61,16 +64,11 @@ export function LoanOffers({ recommendation }: { recommendation: string }) {
               <p className="font-bold text-gray-800">{offer.lender}</p>
               <p className="text-sm text-gray-500">{offer.type} &bull; {offer.rate} {t('loan_interest')}</p>
             </div>
-<<<<<<< Updated upstream
-            <button className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded font-medium text-sm transition-colors shadow-sm">
-              {t('loan_apply')}
-=======
             <button 
               onClick={() => handleApplyClick(offer)}
               className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded font-medium text-sm transition-colors shadow-sm"
             >
-              Apply
->>>>>>> Stashed changes
+              {t('loan_apply')}
             </button>
           </div>
         ))}

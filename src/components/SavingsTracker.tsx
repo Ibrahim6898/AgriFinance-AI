@@ -12,7 +12,7 @@ export function SavingsTracker() {
     return d.toISOString().split('T')[0];
   };
 
-  const [savings] = useState([
+  const [savings, setSavings] = useState([
     { weekKey: 'savings_week1', amount: 500, date: getRelativeDate(14) },
     { weekKey: 'savings_week2', amount: 800, date: getRelativeDate(7) },
     { weekKey: 'savings_week3', amount: 1200, date: getRelativeDate(1) },
@@ -36,7 +36,7 @@ export function SavingsTracker() {
     setSavings([
       ...savings,
       {
-        week: `Week ${savings.length + 1}`,
+        weekKey: `Week ${savings.length + 1}`,
         amount: amountNum,
         date: new Date().toISOString().split('T')[0]
       }
@@ -74,16 +74,11 @@ export function SavingsTracker() {
         ))}
       </div>
 
-<<<<<<< Updated upstream
-      <button className="w-full mt-6 py-2 px-4 border-2 border-[#2D6A4F] text-[#2D6A4F] font-bold rounded-lg hover:bg-[#2D6A4F] hover:text-white transition-all text-sm">
-        {t('savings_add_btn')}
-=======
       <button 
         onClick={() => setIsModalOpen(true)}
         className="w-full mt-6 py-2 px-4 border-2 border-[#2D6A4F] text-[#2D6A4F] font-bold rounded-lg hover:bg-[#2D6A4F] hover:text-white transition-all text-sm"
       >
-        Add Small Savings (₦200 min)
->>>>>>> Stashed changes
+        {t('savings_add_btn')}
       </button>
 
       <p className="mt-4 text-[10px] text-gray-400 italic text-center leading-tight">

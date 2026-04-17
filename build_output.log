@@ -1,0 +1,95 @@
+
+> agrifinance-ai@0.1.0 build
+> next build
+
+   Γû▓ Next.js 15.5.7
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+Failed to compile.
+
+./src/components/LoanOffers.tsx
+Error:   x Merge conflict marker encountered.
+   ,-[C:\AgriFinance AI\src\components\LoanOffers.tsx:3:1]
+ 1 | 'use client';
+ 2 | 
+ 3 | <<<<<<< Updated upstream
+   : ^^^^^^^
+ 4 | import { useLanguage } from '@/contexts/LanguageContext';
+ 5 | 
+ 5 | export function LoanOffers({ recommendation }: { recommendation: string }) {
+   `----
+  x Merge conflict marker encountered.
+    ,-[C:\AgriFinance AI\src\components\LoanOffers.tsx:8:1]
+  5 | 
+  6 | export function LoanOffers({ recommendation }: { recommendation: string }) {
+  7 |   const { t } = useLanguage();
+  8 | =======
+    : ^^^^^^^
+  9 | import React, { useState } from 'react';
+ 10 | 
+ 10 | export function LoanOffers({ recommendation }: { recommendation: string }) {
+    `----
+  x 'import', and 'export' cannot be used outside of module code
+    ,-[C:\AgriFinance AI\src\components\LoanOffers.tsx:8:1]
+  5 |     
+  6 |     export function LoanOffers({ recommendation }: { recommendation: string }) {
+  7 |       const { t } = useLanguage();
+  8 | ,-> =======
+  9 | `-> import React, { useState } from 'react';
+ 10 |     
+ 11 |     export function LoanOffers({ recommendation }: { recommendation: string }) {
+ 11 |       const [selectedOffer, setSelectedOffer] = useState<any>(null);
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/components/LoanOffers.tsx
+./src/app/onboard/page.tsx
+
+./src/components/SavingsTracker.tsx
+Error:   x Expression expected
+    ,-[C:\AgriFinance AI\src\components\SavingsTracker.tsx:77:1]
+ 74 |         ))}
+ 75 |       </div>
+ 76 | 
+ 77 | <<<<<<< Updated upstream
+    :  ^^
+ 78 |       <button className="w-full mt-6 py-2 px-4 border-2 border-[#2D6A4F] text-[#2D6A4F] font-bold rounded-lg hover:bg-[#2D6A4F] hover:text-white transition-all text-sm">
+ 79 |         {t('savings_add_btn')}
+ 79 | =======
+    `----
+  x Expression expected
+    ,-[C:\AgriFinance AI\src\components\SavingsTracker.tsx:77:1]
+ 74 |         ))}
+ 75 |       </div>
+ 76 | 
+ 77 | <<<<<<< Updated upstream
+    :    ^^
+ 78 |       <button className="w-full mt-6 py-2 px-4 border-2 border-[#2D6A4F] text-[#2D6A4F] font-bold rounded-lg hover:bg-[#2D6A4F] hover:text-white transition-all text-sm">
+ 79 |         {t('savings_add_btn')}
+ 79 | =======
+    `----
+  x Expression expected
+    ,-[C:\AgriFinance AI\src\components\SavingsTracker.tsx:77:1]
+ 74 |         ))}
+ 75 |       </div>
+ 76 | 
+ 77 | <<<<<<< Updated upstream
+    :      ^^
+ 78 |       <button className="w-full mt-6 py-2 px-4 border-2 border-[#2D6A4F] text-[#2D6A4F] font-bold rounded-lg hover:bg-[#2D6A4F] hover:text-white transition-all text-sm">
+ 79 |         {t('savings_add_btn')}
+ 79 | =======
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/components/SavingsTracker.tsx
+./src/app/onboard/page.tsx
+
+
+> Build failed because of webpack errors
