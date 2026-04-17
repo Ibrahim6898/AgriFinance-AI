@@ -50,7 +50,7 @@ export async function POST(request: Request) {
     // Always save to the database using admin client (bypasses RLS)
     const adminClient = createAdminClient();
     if (adminClient) {
-      const targetId = user?.id || `farmer-${farmer.phoneNumber.replace(/\D/g, '').slice(-6)}-${Date.now()}`;
+      const targetId = `farmer-${farmer.phoneNumber.replace(/\D/g, '')}`;
       
       const { error: dbError } = await adminClient
         .from('farmers')
@@ -74,7 +74,7 @@ export async function POST(request: Request) {
           positive_factors: scoreData.positive_factors,
           risk_factors: scoreData.risk_factors,
           green_tips: scoreData.green_tips,
-        });
+        }, { onConflict: 'id' });
 
       if (dbError) {
         console.error('Error saving farmer to Supabase:', dbError);

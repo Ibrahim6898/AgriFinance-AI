@@ -44,7 +44,8 @@ export default function AdminDashboard() {
 
   const fetchFarmers = useCallback(async () => {
     if (!supabase) {
-      setFarmers(MOCK_FARMERS);
+      console.warn('Supabase client unavailable, showing empty data.');
+      setFarmers([]);
       setLoading(false);
       return;
     }
@@ -53,10 +54,10 @@ export default function AdminDashboard() {
       const { data, error } = await supabase.from('farmers').select('*').order('created_at', { ascending: false });
       if (error) throw error;
       const fetchedData = data ? (data as unknown as FarmerDB[]) : [];
-      setFarmers([...fetchedData, ...MOCK_FARMERS]);
+      setFarmers(fetchedData.length > 0 ? fetchedData : MOCK_FARMERS);
     } catch (err) {
       console.error('Error fetching farmers:', err);
-      setFarmers(MOCK_FARMERS);
+      setFarmers([]);
     }
     setLoading(false);
   }, [supabase]);
