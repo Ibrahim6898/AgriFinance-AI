@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import { FarmerDB } from '@/types/farmer';
 import { useLanguage } from '@/contexts/LanguageContext';
+import Link from 'next/link';
 
 export default function BankDashboard() {
   const [farmers, setFarmers] = useState<FarmerDB[]>([]);
@@ -140,10 +141,13 @@ export default function BankDashboard() {
       )}
 
       <div className="max-w-6xl mx-auto">
-        <header className="flex justify-between items-center mb-6">
+        <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
           <div>
+            <p className="text-xs text-gray-500 mb-1">
+              <Link href="/admin" className="hover:text-[#2D6A4F] font-medium">← Farmer Records</Link>
+            </p>
             <h1 className="text-3xl font-extrabold text-[#1B4332]">Lender Action Portal</h1>
-            <p className="text-gray-500 mt-1 font-medium italic">Loan Underwriting & Dispatch Dashboard</p>
+            <p className="text-gray-500 mt-1 font-medium italic">Loan Underwriting &amp; Dispatch Dashboard</p>
           </div>
           <div className="flex space-x-3 items-center">
              <label className="text-sm font-bold text-slate-700 mr-2">Simulate Bank Login:</label>

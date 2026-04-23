@@ -58,7 +58,8 @@ export default function Navbar() {
 
   const navLinks = [
     { href: '/onboard', label: t('onboarding') },
-    { href: '/bank', label: t('lenders') },
+    { href: '/admin', label: t('lenders') },
+    { href: '/bank', label: 'Lender Portal' },
   ];
 
   return (

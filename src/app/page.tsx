@@ -25,7 +25,7 @@ export default function Page() {
               {t('home_farmer_btn')}
             </Link>
             <Link
-              href="/bank"
+              href="/admin"
               className="bg-white text-[#2D6A4F] border-2 border-[#2D6A4F] px-8 py-4 rounded-lg font-bold hover:bg-green-50 transition-colors shadow-sm text-lg text-center"
             >
               {t('home_admin_btn')}
