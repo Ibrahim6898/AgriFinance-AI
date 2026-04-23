@@ -182,7 +182,7 @@ export default function AdminDashboard() {
               href="/bank"
               className="bg-[#2D6A4F] text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-[#1B4332] transition-colors shadow-sm"
             >
-              → Lender Action Portal
+              → Loan Approvals
             </Link>
              <button
                onClick={() => fetchFarmers()}

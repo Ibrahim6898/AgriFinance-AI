@@ -6,6 +6,23 @@ import { FarmerDB } from '@/types/farmer';
 import { useLanguage } from '@/contexts/LanguageContext';
 import Link from 'next/link';
 
+const MOCK_FARMERS: FarmerDB[] = [
+  { id: '1',  name: 'Hamisu Anka',      location: 'Anka, Zamfara',          primary_crop: 'Cotton',    credit_grade: 'A', credit_score: 85, climate_risk_score: 4, phone_number: '08031234001', farm_size_acres: 5,   farming_method: 'Mechanized',  estimated_yield_kg: 2200, years_experience: 10, has_irrigation: true,  has_prior_loan: true,  assigned_lender: 'Babban Gona',           loan_status: 'pending'  },
+  { id: '3',  name: 'Usman Birnin',     location: 'Birnin Magaji, Zamfara', primary_crop: 'Millet',    credit_grade: 'C', credit_score: 61, climate_risk_score: 7, phone_number: '08031234003', farm_size_acres: 2,   farming_method: 'Traditional', estimated_yield_kg: 600,  years_experience: 4,  has_irrigation: false, has_prior_loan: false, assigned_lender: 'Babban Gona',           loan_status: 'pending'  },
+  { id: '5',  name: 'Sani Bungudu',     location: 'Bungudu, Zamfara',       primary_crop: 'Sorghum',   credit_grade: 'A', credit_score: 91, climate_risk_score: 2, phone_number: '08031234005', farm_size_acres: 8,   farming_method: 'Mechanized',  estimated_yield_kg: 3500, years_experience: 15, has_irrigation: true,  has_prior_loan: true,  assigned_lender: 'Babban Gona',           loan_status: 'approved' },
+  { id: '6',  name: 'Hauwa Gummi',      location: 'Gummi, Zamfara',         primary_crop: 'Rice',      credit_grade: 'B', credit_score: 78, climate_risk_score: 4, phone_number: '08031234006', farm_size_acres: 5,   farming_method: 'Mixed',       estimated_yield_kg: 1800, years_experience: 9,  has_irrigation: true,  has_prior_loan: false, assigned_lender: 'Babban Gona',           loan_status: 'pending'  },
+  { id: '8',  name: 'Zainab Kauran',    location: 'Kauran Namoda, Zamfara', primary_crop: 'Soybeans',  credit_grade: 'C', credit_score: 63, climate_risk_score: 7, phone_number: '08031234008', farm_size_acres: 2.5, farming_method: 'Traditional', estimated_yield_kg: 700,  years_experience: 5,  has_irrigation: false, has_prior_loan: false, assigned_lender: 'Babban Gona',           loan_status: 'pending'  },
+  { id: '10', name: 'Aisha Maru',       location: 'Maru, Zamfara',          primary_crop: 'Groundnut', credit_grade: 'D', credit_score: 48, climate_risk_score: 9, phone_number: '08031234010', farm_size_acres: 1.5, farming_method: 'Traditional', estimated_yield_kg: 350,  years_experience: 2,  has_irrigation: false, has_prior_loan: false, assigned_lender: 'Babban Gona',           loan_status: 'pending'  },
+  { id: '12', name: 'Ramatu Talata',    location: 'Talata Mafara, Zamfara', primary_crop: 'Rice',      credit_grade: 'A', credit_score: 89, climate_risk_score: 3, phone_number: '08031234012', farm_size_acres: 7,   farming_method: 'Mechanized',  estimated_yield_kg: 3100, years_experience: 14, has_irrigation: true,  has_prior_loan: true,  assigned_lender: 'Babban Gona',           loan_status: 'approved' },
+  { id: '14', name: 'Hadiza Zurmi',     location: 'Zurmi, Zamfara',         primary_crop: 'Cowpea',    credit_grade: 'C', credit_score: 59, climate_risk_score: 8, phone_number: '08031234014', farm_size_acres: 2,   farming_method: 'Traditional', estimated_yield_kg: 500,  years_experience: 3,  has_irrigation: false, has_prior_loan: false, assigned_lender: 'Babban Gona',           loan_status: 'pending'  },
+  { id: '2',  name: 'Fadila Bakura',    location: 'Bakura, Zamfara',        primary_crop: 'Groundnut', credit_grade: 'B', credit_score: 72, climate_risk_score: 6, phone_number: '08031234002', farm_size_acres: 3,   farming_method: 'Traditional', estimated_yield_kg: 900,  years_experience: 6,  has_irrigation: false, has_prior_loan: true,  assigned_lender: 'Sterling Bank (Sabadi)', loan_status: 'pending'  },
+  { id: '4',  name: 'Maryam Buk',       location: 'Bukkuyum, Zamfara',      primary_crop: 'Cowpea',    credit_grade: 'B', credit_score: 76, climate_risk_score: 5, phone_number: '08031234004', farm_size_acres: 4,   farming_method: 'Mixed',       estimated_yield_kg: 1100, years_experience: 8,  has_irrigation: false, has_prior_loan: true,  assigned_lender: 'Sterling Bank (Sabadi)', loan_status: 'approved' },
+  { id: '7',  name: 'Aliyu Danjuma',    location: 'Gusau, Zamfara',         primary_crop: 'Maize',     credit_grade: 'A', credit_score: 94, climate_risk_score: 2, phone_number: '08031234007', farm_size_acres: 10,  farming_method: 'Mechanized',  estimated_yield_kg: 4200, years_experience: 18, has_irrigation: true,  has_prior_loan: true,  assigned_lender: 'Sterling Bank (Sabadi)', loan_status: 'approved' },
+  { id: '9',  name: 'Bello Maradun',    location: 'Maradun, Zamfara',       primary_crop: 'Cotton',    credit_grade: 'B', credit_score: 80, climate_risk_score: 5, phone_number: '08031234009', farm_size_acres: 6,   farming_method: 'Mixed',       estimated_yield_kg: 2000, years_experience: 11, has_irrigation: false, has_prior_loan: true,  assigned_lender: 'Sterling Bank (Sabadi)', loan_status: 'pending'  },
+  { id: '11', name: 'Ibrahim Shinkafi', location: 'Shinkafi, Zamfara',      primary_crop: 'Millet',    credit_grade: 'C', credit_score: 65, climate_risk_score: 6, phone_number: '08031234011', farm_size_acres: 3,   farming_method: 'Traditional', estimated_yield_kg: 850,  years_experience: 7,  has_irrigation: false, has_prior_loan: false, assigned_lender: 'Sterling Bank (Sabadi)', loan_status: 'pending'  },
+  { id: '13', name: 'Musa Tsafe',       location: 'Tsafe, Zamfara',         primary_crop: 'Sorghum',   credit_grade: 'B', credit_score: 74, climate_risk_score: 5, phone_number: '08031234013', farm_size_acres: 4,   farming_method: 'Mixed',       estimated_yield_kg: 1400, years_experience: 9,  has_irrigation: false, has_prior_loan: true,  assigned_lender: 'Sterling Bank (Sabadi)', loan_status: 'pending'  },
+];
+
 export default function BankDashboard() {
   const [farmers, setFarmers] = useState<FarmerDB[]>([]);
   const [currentBank, setCurrentBank] = useState('Babban Gona');
@@ -17,8 +34,7 @@ export default function BankDashboard() {
 
   const fetchFarmers = useCallback(async () => {
     if (!supabase) {
-      console.warn('Supabase client unavailable, showing empty data.');
-      setFarmers([]);
+      setFarmers(MOCK_FARMERS);
       setLoading(false);
       return;
     }
@@ -26,10 +42,11 @@ export default function BankDashboard() {
     try {
       const { data, error } = await supabase.from('farmers').select('*').order('created_at', { ascending: false });
       if (error) throw error;
-      setFarmers(data ? (data as unknown as FarmerDB[]) : []);
+      const fetchedData = data ? (data as unknown as FarmerDB[]) : [];
+      setFarmers(fetchedData.length > 0 ? fetchedData : MOCK_FARMERS);
     } catch (err) {
       console.error('Error fetching farmers:', err);
-      setFarmers([]);
+      setFarmers(MOCK_FARMERS);
     }
     setLoading(false);
   }, [supabase]);
@@ -146,8 +163,8 @@ export default function BankDashboard() {
             <p className="text-xs text-gray-500 mb-1">
               <Link href="/admin" className="hover:text-[#2D6A4F] font-medium">← Farmer Records</Link>
             </p>
-            <h1 className="text-3xl font-extrabold text-[#1B4332]">Lender Action Portal</h1>
-            <p className="text-gray-500 mt-1 font-medium italic">Loan Underwriting &amp; Dispatch Dashboard</p>
+            <h1 className="text-3xl font-extrabold text-[#1B4332]">Loan Approvals</h1>
+            <p className="text-gray-500 mt-1 font-medium italic">Review &amp; approve farmer loan applications</p>
           </div>
           <div className="flex items-center gap-3 flex-wrap">
              <label className="text-sm font-bold text-slate-600">Viewing as:</label>
