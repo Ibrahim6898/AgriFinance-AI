@@ -71,7 +71,7 @@ To run this MVP locally, follow these steps:
 ## Usage
 - **Landing Page**: Navigate between the Farmer Onboarding and the Admin Portal.
 - **Farmer Onboarding** (`/onboard`): Fill out the farmer profile to see the AI analysis, credit score, loan matching, and SMS/USSD simulator.
-- **Admin Portal** (`/admin`): View simulated existing farmer profiles, filter by region, and review their climate risk levels.
+- **Lender Portal** (`/lenders`): View simulated existing farmer profiles, filter by region, and review their climate risk levels.
 
 ## AI Disclosure Statement
 

@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
+import { useLanguage } from '@/contexts/LanguageContext';
+import Link from 'next/link';
 
 export default function LoginPage() {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -15,6 +17,7 @@ export default function LoginPage() {
   
   const supabase = createClient();
   const router = useRouter();
+  const { t } = useLanguage();
 
   React.useEffect(() => {
     if (!supabase) {
@@ -95,25 +98,29 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="text-center text-3xl font-extrabold text-[#2D6A4F]">
-          Sign in to AgriFinance
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-gray-50 to-emerald-50 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 font-sans">
+      {/* Brand header */}
+      <div className="sm:mx-auto sm:w-full sm:max-w-md mb-8">
+        <Link href="/" className="flex justify-center">
+          <span className="text-3xl font-black text-[#2D6A4F] tracking-tight">AgriFinance AI</span>
+        </Link>
+        <h2 className="mt-4 text-center text-2xl font-extrabold text-slate-800">
+          {t('login_title')}
         </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
-          Access your farm credit dashboard
+        <p className="mt-2 text-center text-sm text-gray-500">
+          {t('login_subtitle')}
         </p>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="bg-white py-8 px-6 shadow-lg rounded-2xl border border-gray-100 sm:px-10">
           {error && (
-            <div className="mb-4 bg-red-50 border-l-4 border-red-500 p-4">
+            <div className="mb-5 bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
               <p className="text-sm text-red-700">{error}</p>
             </div>
           )}
           {message && (
-            <div className="mb-4 bg-green-50 border-l-4 border-green-500 p-4">
+            <div className="mb-5 bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg">
               <p className="text-sm text-green-700">{message}</p>
             </div>
           )}
@@ -121,74 +128,74 @@ export default function LoginPage() {
           {step === 'phone' ? (
             <form className="space-y-6" onSubmit={handleSendOtp}>
               <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-                  Phone Number
+                <label htmlFor="phone" className="block text-sm font-semibold text-gray-700 mb-1">
+                  {t('login_phone_label')}
                 </label>
-                <div className="mt-1">
-                  <input
-                    id="phone"
-                    name="phone"
-                    type="tel"
-                    required
-                    placeholder="+234 800 000 0000"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#2D6A4F] focus:border-[#2D6A4F] sm:text-sm"
-                  />
-                </div>
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  required
+                  placeholder={t('login_phone_placeholder')}
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  className="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2D6A4F] focus:border-[#2D6A4F] text-sm transition-shadow"
+                />
               </div>
 
-              <div>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#2D6A4F] hover:bg-[#1B4332] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2D6A4F] disabled:opacity-50"
-                >
-                  {loading ? 'Sending...' : 'Send OTP'}
-                </button>
-              </div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-[#2D6A4F] hover:bg-[#1B4332] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2D6A4F] disabled:opacity-50 transition-colors uppercase tracking-wide"
+              >
+                {loading ? t('login_sending') : t('login_send_otp')}
+              </button>
             </form>
           ) : (
             <form className="space-y-6" onSubmit={handleVerifyOtp}>
               <div>
-                <label htmlFor="otp" className="block text-sm font-medium text-gray-700">
-                  Enter OTP
+                <label htmlFor="otp" className="block text-sm font-semibold text-gray-700 mb-1">
+                  {t('login_otp_label')}
                 </label>
-                <div className="mt-1">
-                  <input
-                    id="otp"
-                    name="otp"
-                    type="text"
-                    required
-                    placeholder="123456"
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value)}
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#2D6A4F] focus:border-[#2D6A4F] sm:text-sm"
-                  />
-                </div>
+                <input
+                  id="otp"
+                  name="otp"
+                  type="text"
+                  required
+                  placeholder="123456"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  className="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2D6A4F] focus:border-[#2D6A4F] text-sm transition-shadow"
+                />
               </div>
 
-              <div>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#2D6A4F] hover:bg-[#1B4332] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2D6A4F] disabled:opacity-50"
-                >
-                  {loading ? 'Verifying...' : 'Verify OTP'}
-                </button>
-              </div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-[#2D6A4F] hover:bg-[#1B4332] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2D6A4F] disabled:opacity-50 transition-colors uppercase tracking-wide"
+              >
+                {loading ? t('login_verifying') : t('login_verify')}
+              </button>
+
               <div className="text-center">
                 <button
                   type="button"
                   onClick={() => setStep('phone')}
-                  className="text-sm text-[#2D6A4F] hover:underline"
+                  className="text-sm font-medium text-[#2D6A4F] hover:text-[#1B4332] hover:underline transition-colors"
                 >
-                  Change phone number
+                  {t('login_change_phone')}
                 </button>
               </div>
             </form>
           )}
         </div>
+
+        {/* Back to home link */}
+        <p className="mt-6 text-center text-sm text-gray-500">
+          <Link href="/" className="font-medium text-[#2D6A4F] hover:underline">
+            ← Back to Home
+          </Link>
+        </p>
       </div>
     </div>
   );

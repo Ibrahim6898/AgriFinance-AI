@@ -2,7 +2,12 @@
  * A simplified SVG Donut Chart representing a breakdown of the credit score 
  * based on Experience, Farm Data, and Climate factors.
  */
+'use client';
+
+import { useLanguage } from '@/contexts/LanguageContext';
+
 export function ScoreBreakdownChart({ score }: { score: number }) {
+  const { t } = useLanguage();
   // Mock ratios for visual demonstration
   const experienceRatio = 0.4;
   const farmDataRatio = 0.45;
@@ -17,7 +22,7 @@ export function ScoreBreakdownChart({ score }: { score: number }) {
 
   return (
     <div className="flex flex-col items-center p-4 bg-white rounded-xl shadow-sm border border-gray-100">
-      <h3 className="text-gray-600 font-semibold mb-4 w-full text-left">Score Breakdown</h3>
+      <h3 className="text-gray-600 font-semibold mb-4 w-full text-left">{t('score_breakdown_title')}</h3>
       <div className="relative w-32 h-32 flex items-center justify-center">
         <svg viewBox="0 0 100 100" className="transform -rotate-90 w-full h-full">
           {/* Background circle */}
@@ -42,15 +47,15 @@ export function ScoreBreakdownChart({ score }: { score: number }) {
 
       <div className="mt-6 w-full space-y-2 text-sm">
         <div className="flex items-center justify-between">
-          <span className="flex items-center"><span className="w-3 h-3 bg-[#F4A261] rounded-full mr-2"></span>Experience</span>
+          <span className="flex items-center"><span className="w-3 h-3 bg-[#F4A261] rounded-full mr-2"></span>{t('score_breakdown_experience')}</span>
           <span className="font-semibold">{Math.round(score * experienceRatio)} pts</span>
         </div>
         <div className="flex items-center justify-between">
-          <span className="flex items-center"><span className="w-3 h-3 bg-[#2D6A4F] rounded-full mr-2"></span>Farm Data</span>
+          <span className="flex items-center"><span className="w-3 h-3 bg-[#2D6A4F] rounded-full mr-2"></span>{t('score_breakdown_farm_data')}</span>
           <span className="font-semibold">{Math.round(score * farmDataRatio)} pts</span>
         </div>
         <div className="flex items-center justify-between">
-          <span className="flex items-center"><span className="w-3 h-3 bg-[#84CC16] rounded-full mr-2"></span>Climate</span>
+          <span className="flex items-center"><span className="w-3 h-3 bg-[#84CC16] rounded-full mr-2"></span>{t('score_breakdown_climate')}</span>
           <span className="font-semibold">{Math.round(score * climateRatio)} pts</span>
         </div>
       </div>

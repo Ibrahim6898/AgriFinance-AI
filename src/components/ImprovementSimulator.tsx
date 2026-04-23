@@ -17,7 +17,7 @@ export default function ImprovementSimulator({ currentScore, hasIrrigation, hasP
   if (irrigationPotential === 0 && loanPotential === 0) return null;
 
   return (
-    <div className="mt-8 bg-[#2D6A4F]/5 rounded-xl p-6 border border-[#2D6A4F]/20">
+    <div className="bg-[#2D6A4F]/5 rounded-xl p-6 border border-[#2D6A4F]/20">
       <div className="flex items-center mb-4">
         <span className="text-2xl mr-3">📈</span>
         <h3 className="text-lg font-bold text-[#2D6A4F]">{t('improve_title')}</h3>

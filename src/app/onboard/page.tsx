@@ -249,7 +249,7 @@ export default function OnboardPage() {
                     className="w-full sm:w-auto bg-white border-2 border-[#2D6A4F] text-[#2D6A4F] font-black py-4 px-8 rounded-xl transition-all shadow-sm hover:bg-green-50 transform hover:-translate-y-1 active:translate-y-0 uppercase tracking-widest text-sm flex items-center justify-center gap-2"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                    Download Report
+                    {t('download_report')}
                   </button>
                   <button
                     onClick={handleShare}

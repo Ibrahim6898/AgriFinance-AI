@@ -8,7 +8,7 @@ export default function Page() {
   const { t } = useLanguage();
 
   return (
-    <div className="min-h-screen flex flex-col justify-center p-8 bg-gray-50">
+    <div className="min-h-screen flex flex-col justify-center p-8 bg-gray-50 font-sans">
       <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         <div className="text-left order-2 lg:order-1">
           <h1 className="text-5xl lg:text-6xl font-extrabold text-[#2D6A4F] mb-6 leading-tight">
@@ -25,7 +25,7 @@ export default function Page() {
               {t('home_farmer_btn')}
             </Link>
             <Link
-              href="/admin"
+              href="/bank"
               className="bg-white text-[#2D6A4F] border-2 border-[#2D6A4F] px-8 py-4 rounded-lg font-bold hover:bg-green-50 transition-colors shadow-sm text-lg text-center"
             >
               {t('home_admin_btn')}

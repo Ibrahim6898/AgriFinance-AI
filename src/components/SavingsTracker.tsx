@@ -28,7 +28,7 @@ export function SavingsTracker() {
   const handleSave = () => {
     const amountNum = parseFloat(savingsInput);
     if (isNaN(amountNum) || amountNum < 200) {
-      setErrorMsg('Minimum amount is ₦200');
+      setErrorMsg(t('savings_modal_min_error'));
       return;
     }
     setErrorMsg('');
@@ -97,17 +97,17 @@ export function SavingsTracker() {
             {showSuccess ? (
               <div className="text-center py-6">
                 <div className="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">✓</div>
-                <h4 className="font-bold text-lg text-slate-800">Savings Added!</h4>
-                <p className="text-sm text-gray-500 mt-2">Your wallet balance has been updated.</p>
+                <h4 className="font-bold text-lg text-slate-800">{t('savings_modal_success_title')}</h4>
+                <p className="text-sm text-gray-500 mt-2">{t('savings_modal_success_desc')}</p>
               </div>
             ) : (
               <>
                 <div className="flex justify-between items-center mb-4">
-                  <h4 className="font-bold text-lg text-[#2D6A4F]">Add Savings</h4>
+                  <h4 className="font-bold text-lg text-[#2D6A4F]">{t('savings_modal_title')}</h4>
                   <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600 text-xl leading-none">&times;</button>
                 </div>
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Amount (₦)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('savings_modal_amount_label')}</label>
                   <input
                     type="number"
                     min="0"
@@ -123,7 +123,7 @@ export function SavingsTracker() {
                   onClick={handleSave}
                   className="w-full bg-[#2D6A4F] text-white font-bold py-2 rounded-lg hover:bg-[#1B4332] transition-colors"
                 >
-                  Confirm Savings
+                  {t('savings_modal_confirm')}
                 </button>
               </>
             )}
