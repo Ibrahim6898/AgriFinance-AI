@@ -121,18 +121,20 @@ export default function OnboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 font-sans">
+    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8 font-sans">
       <div className="max-w-6xl mx-auto">
         
-        {/* Header */}
-        <div className="text-center mb-10">
-          <h1 className="text-4xl font-extrabold text-[#2D6A4F] tracking-tight sm:text-5xl">
-            {scoreData ? t('analysis_title') : t('join_title')}
-          </h1>
-          <p className="mt-4 text-xl text-gray-600">
-            {scoreData ? t('analysis_desc') : t('join_desc')}
-          </p>
-        </div>
+        {/* Header — only show when viewing form, not results */}
+        {!scoreData && (
+          <div className="text-center mb-8">
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-[#2D6A4F] tracking-tight">
+              {t('join_title')}
+            </h1>
+            <p className="mt-3 text-lg text-gray-500 max-w-xl mx-auto">
+              {t('join_desc')}
+            </p>
+          </div>
+        )}
 
         {/* Content Area */}
         {!scoreData ? (
@@ -141,25 +143,28 @@ export default function OnboardPage() {
           </div>
         ) : (
           <div className="space-y-8">
-            <div className="bg-white rounded-xl shadow-md overflow-hidden text-slate-800 p-8 border border-gray-100">
-              <div className="flex flex-col md:flex-row justify-between items-center mb-10">
-                <div>
-                  <h2 className="text-2xl font-black text-[#2D6A4F] uppercase tracking-tight">
-                    {t('credit_grade')}: <span className="text-5xl ml-2 font-black">{scoreData.grade}</span>
-                  </h2>
-                  <p className="text-gray-500 font-bold">{t('score')}: {scoreData.credit_score} / 100</p>
-                </div>
-                <div className="mt-6 md:mt-0 text-right bg-amber-50 p-4 rounded-xl border border-amber-100">
-                  <p className="font-bold text-amber-900 text-sm mb-2">{t('climate_risk')}</p>
+            {/* Results header */}
+            <div className="text-center">
+              <h1 className="text-3xl sm:text-4xl font-extrabold text-[#2D6A4F] tracking-tight">
+                {t('analysis_title')}
+              </h1>
+              <p className="mt-2 text-lg text-gray-500">{t('analysis_desc')}</p>
+            </div>
+
+            <div className="bg-white rounded-xl shadow-md overflow-hidden text-slate-800 p-6 sm:p-8 border border-gray-100">
+              {/* Climate risk indicator — top right */}
+              <div className="flex justify-end mb-6">
+                <div className="text-right bg-amber-50 px-4 py-3 rounded-xl border border-amber-100">
+                  <p className="font-bold text-amber-900 text-xs mb-2">{t('climate_risk')}</p>
                   <div className="flex space-x-1 justify-end">
                     {[...Array(10)].map((_, i) => (
                       <div 
                         key={i} 
-                        className={`h-3 w-3 rounded-full ${i < scoreData.climate_risk_score ? 'bg-amber-500' : 'bg-gray-200'}`}
+                        className={`h-2.5 w-2.5 rounded-full ${i < scoreData.climate_risk_score ? 'bg-amber-500' : 'bg-gray-200'}`}
                       />
                     ))}
                   </div>
-                  <p className="text-xs font-black text-amber-700 mt-2">{scoreData.climate_risk_score}/10</p>
+                  <p className="text-xs font-black text-amber-700 mt-1">{scoreData.climate_risk_score}/10</p>
                 </div>
               </div>
 

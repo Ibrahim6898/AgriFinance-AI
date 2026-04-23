@@ -106,9 +106,7 @@ export default function FarmerForm({ onScoreSuccess }: FarmerFormProps) {
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl text-slate-800 p-6">
-      <h2 className="text-2xl font-bold mb-4 text-[#2D6A4F]">{t('app_name')} - {t('onboarding')}</h2>
-      <p className="text-gray-600 mb-6 font-medium">{t('join_desc')}</p>
+    <div className="bg-white rounded-xl shadow-md overflow-hidden text-slate-800 p-6 sm:p-8">
       
       {errorMsg && (
         <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6">

@@ -174,7 +174,7 @@ export default function AdminDashboard() {
       <div className="max-w-7xl mx-auto">
         <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
           <div>
-            <h1 className="text-3xl font-extrabold text-[#2D6A4F]">{t('admin_title')}</h1>
+            <h1 className="text-3xl font-extrabold text-[#2D6A4F]">Farmer Records</h1>
             <p className="text-gray-500 mt-1 font-medium italic">{t('admin_subtitle')}</p>
           </div>
           <div className="flex gap-3 items-center flex-wrap">
@@ -219,10 +219,11 @@ export default function AdminDashboard() {
         </div>
 
         {/* Importance Banner */}
-        <div className="bg-[#2D6A4F] text-white p-6 rounded-xl shadow-inner mb-8 border-l-8 border-[#1B4332]">
+        <div className="bg-green-50 border border-green-200 text-slate-800 p-5 rounded-xl mb-8 flex items-start gap-4">
+           <div className="text-2xl mt-0.5">💡</div>
            <div>
-              <h3 className="font-black text-lg mb-1 uppercase tracking-tight">{t('why_matters_title')}</h3>
-              <p className="text-green-50 text-sm leading-relaxed font-medium">
+              <h3 className="font-black text-sm mb-1 text-[#2D6A4F] uppercase tracking-tight">{t('why_matters_title')}</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
                  {t('why_matters_desc')}
               </p>
            </div>
